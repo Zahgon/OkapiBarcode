@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.output;
 
 import java.io.IOException;
@@ -27,7 +26,9 @@ import java.util.Locale;
  */
 class ExtendedOutputStreamWriter extends OutputStreamWriter {
 
-    /** Format to use when writing doubles to the stream. */
+    /**
+     * Format to use when writing doubles to the stream.
+     */
     private final String doubleFormat;
 
     /**
@@ -41,18 +42,20 @@ class ExtendedOutputStreamWriter extends OutputStreamWriter {
         this.doubleFormat = doubleFormat;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ExtendedOutputStreamWriter append(CharSequence cs) throws IOException {
-        super.append(cs);
-        return this;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ExtendedOutputStreamWriter append(CharSequence cs, int start, int end) throws IOException {
-        super.append(cs, start, end);
-        return this;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -63,8 +66,7 @@ class ExtendedOutputStreamWriter extends OutputStreamWriter {
      * @throws IOException if an I/O error occurs
      */
     public ExtendedOutputStreamWriter append(double d) throws IOException {
-        super.append(String.format(Locale.ROOT, doubleFormat, d));
-        return this;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -75,7 +77,6 @@ class ExtendedOutputStreamWriter extends OutputStreamWriter {
      * @throws IOException if an I/O error occurs
      */
     public ExtendedOutputStreamWriter appendInt(int i) throws IOException {
-        super.append(String.valueOf(i));
-        return this;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.backend.HumanReadableLocation.NONE;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.TOP;
-
 import uk.org.okapibarcode.graphics.Rectangle;
 import uk.org.okapibarcode.graphics.TextBox;
 
@@ -33,6 +31,7 @@ public class Code2Of5 extends Symbol {
      * The different Code 2 of 5 barcode variants available to encode.
      */
     public enum ToFMode {
+
         /**
          * Standard Code 2 of 5 mode, also known as Code 2 of 5 Matrix. Encodes any
          * length numeric input (digits 0-9). This is the default mode.
@@ -82,22 +81,20 @@ public class Code2Of5 extends Symbol {
         DP_IDENTCODE
     }
 
-    private static final String[] C25_MATRIX_TABLE = {
-        "113311", "311131", "131131", "331111", "113131", "313111", "133111", "111331", "311311", "131311"
-    };
+    private static final String[] C25_MATRIX_TABLE = { "113311", "311131", "131131", "331111", "113131", "313111", "133111", "111331", "311311", "131311" };
 
-    private static final String[] C25_INDUSTRIAL_TABLE = {
-        "1111313111", "3111111131", "1131111131", "3131111111", "1111311131", "3111311111", "1131311111", "1111113131", "3111113111", "1131113111"
-    };
+    private static final String[] C25_INDUSTRIAL_TABLE = { "1111313111", "3111111131", "1131111131", "3131111111", "1111311131", "3111311111", "1131311111", "1111113131", "3111113111", "1131113111" };
 
-    private static final String[] C25_INTERLEAVED_TABLE = {
-        "11331", "31113", "13113", "33111", "11313", "31311", "13311", "11133", "31131", "13131"
-    };
+    private static final String[] C25_INTERLEAVED_TABLE = { "11331", "31113", "13113", "33111", "11313", "31311", "13311", "11133", "31131", "13131" };
 
-    /** The 2-of-5 mode. */
+    /**
+     * The 2-of-5 mode.
+     */
     private ToFMode mode;
 
-    /** Ratio of wide bar width to narrow bar width. */
+    /**
+     * Ratio of wide bar width to narrow bar width.
+     */
     private double moduleWidthRatio = 3;
 
     /**
@@ -122,7 +119,7 @@ public class Code2Of5 extends Symbol {
      * @param mode the 2-of-5 mode
      */
     public void setMode(ToFMode mode) {
-        this.mode = mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -131,7 +128,7 @@ public class Code2Of5 extends Symbol {
      * @return the 2-of-5 mode
      */
     public ToFMode getMode() {
-        return mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -141,7 +138,7 @@ public class Code2Of5 extends Symbol {
      * @param moduleWidthRatio the ratio of wide bar width to narrow bar width
      */
     public void setModuleWidthRatio(double moduleWidthRatio) {
-        this.moduleWidthRatio = moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -150,54 +147,23 @@ public class Code2Of5 extends Symbol {
      * @return the ratio of wide bar width to narrow bar width
      */
     public double getModuleWidthRatio() {
-        return moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-        switch (mode) {
-            case MATRIX:
-                dataMatrix();
-                break;
-            case INDUSTRIAL:
-                industrial();
-                break;
-            case IATA:
-                iata();
-                break;
-            case INTERLEAVED:
-                interleaved(false);
-                break;
-            case INTERLEAVED_WITH_CHECK_DIGIT:
-                interleaved(true);
-                break;
-            case DATA_LOGIC:
-                dataLogic();
-                break;
-            case ITF14:
-                itf14();
-                break;
-            case DP_LEITCODE:
-                deutschePostLeitcode();
-                break;
-            case DP_IDENTCODE:
-                deutschePostIdentcode();
-                break;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void dataMatrix() {
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         String dest = "311111";
         for (int i = 0; i < content.length(); i++) {
             dest += C25_MATRIX_TABLE[Character.getNumericValue(content.charAt(i))];
         }
         dest += "31111";
-
         readable = content;
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
@@ -205,17 +171,14 @@ public class Code2Of5 extends Symbol {
     }
 
     private void industrial() {
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         String dest = "313111";
         for (int i = 0; i < content.length(); i++) {
             dest += C25_INDUSTRIAL_TABLE[Character.getNumericValue(content.charAt(i))];
         }
         dest += "31113";
-
         readable = content;
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
@@ -223,17 +186,14 @@ public class Code2Of5 extends Symbol {
     }
 
     private void iata() {
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         String dest = "1111";
         for (int i = 0; i < content.length(); i++) {
             dest += C25_INDUSTRIAL_TABLE[Character.getNumericValue(content.charAt(i))];
         }
         dest += "311";
-
         readable = content;
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
@@ -241,17 +201,14 @@ public class Code2Of5 extends Symbol {
     }
 
     private void dataLogic() {
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         String dest = "1111";
         for (int i = 0; i < content.length(); i++) {
             dest += C25_MATRIX_TABLE[Character.getNumericValue(content.charAt(i))];
         }
         dest += "311";
-
         readable = content;
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
@@ -261,29 +218,23 @@ public class Code2Of5 extends Symbol {
     private void interleaved(boolean addCheckDigit) {
         int i;
         String dest;
-
         readable = content;
-
         if (!readable.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         if (addCheckDigit) {
             char checkDigit = checkDigit(readable, 1, 3);
             readable += checkDigit;
             infoLine("Check Digit: ", checkDigit);
         }
-
         if ((readable.length() & 1) != 0) {
             readable = "0" + readable;
         }
-
         dest = "1111";
         for (i = 0; i < readable.length(); i += 2) {
             dest += interlace(i, i + 1);
         }
         dest += "311";
-
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
         rowCount = 1;
@@ -292,16 +243,13 @@ public class Code2Of5 extends Symbol {
     private String interlace(int x, int y) {
         char a = readable.charAt(x);
         char b = readable.charAt(y);
-
         String one = C25_INTERLEAVED_TABLE[Character.getNumericValue(a)];
         String two = C25_INTERLEAVED_TABLE[Character.getNumericValue(b)];
-
         StringBuilder f = new StringBuilder(10);
         for (int i = 0; i < 5; i++) {
             f.append(one.charAt(i));
             f.append(two.charAt(i));
         }
-
         return f.toString();
     }
 
@@ -309,31 +257,25 @@ public class Code2Of5 extends Symbol {
         int i;
         int input_length = content.length();
         String dest;
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         if (input_length > 13) {
             throw OkapiInputException.inputTooLong();
         }
-
         readable = "";
         for (i = input_length; i < 13; i++) {
             readable += "0";
         }
         readable += content;
-
         char checkDigit = checkDigit(readable, 1, 3);
         readable += checkDigit;
         infoLine("Check Digit: ", checkDigit);
-
         dest = "1111";
         for (i = 0; i < readable.length(); i += 2) {
             dest += interlace(i, i + 1);
         }
         dest += "311";
-
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
         rowCount = 1;
@@ -343,31 +285,25 @@ public class Code2Of5 extends Symbol {
         int i;
         int input_length = content.length();
         String dest;
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         if (input_length > 13) {
             throw OkapiInputException.inputTooLong();
         }
-
         readable = "";
         for (i = input_length; i < 13; i++) {
             readable += "0";
         }
         readable += content;
-
         char checkDigit = checkDigit(readable, 9, 4);
         readable += checkDigit;
         infoLine("Check digit: ", checkDigit);
-
         dest = "1111";
         for (i = 0; i < readable.length(); i += 2) {
             dest += interlace(i, i + 1);
         }
         dest += "311";
-
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
         rowCount = 1;
@@ -377,31 +313,25 @@ public class Code2Of5 extends Symbol {
         int i;
         int input_length = content.length();
         String dest;
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         if (input_length > 11) {
             throw OkapiInputException.inputTooLong();
         }
-
         readable = "";
         for (i = input_length; i < 11; i++) {
             readable += "0";
         }
         readable += content;
-
         char checkDigit = checkDigit(readable, 9, 4);
         readable += checkDigit;
         infoLine("Check Digit: ", checkDigit);
-
         dest = "1111";
         for (i = 0; i < readable.length(); i += 2) {
             dest += interlace(i, i + 1);
         }
         dest += "311";
-
         pattern = new String[] { dest };
         rowHeight = new int[] { defaultHeight };
         rowCount = 1;
@@ -421,71 +351,14 @@ public class Code2Of5 extends Symbol {
 
     @Override
     protected void plotSymbol() {
-
-        resetPlotElements();
-
-        int baseY;
-        if (humanReadableLocation == TOP) {
-            baseY = getTheoreticalHumanReadableHeight();
-        } else {
-            baseY = 0;
-        }
-
-        double x = 0;
-        int y = baseY;
-        int h = rowHeight[0];
-        boolean black = true;
-
-        int offset = 0;
-        if (mode == ToFMode.ITF14) {
-            offset = 20;
-        }
-
-        for (int xBlock = 0; xBlock < pattern[0].length(); xBlock++) {
-            char c = pattern[0].charAt(xBlock);
-            double w = getModuleWidth(c - '0') * moduleWidth;
-            if (black) {
-                if (w != 0 && h != 0) {
-                    addRectangle(new Rectangle(x + offset, y, w, h));
-                }
-                symbolWidth = (int) Math.ceil(x + w + (2 * offset));
-            }
-            black = !black;
-            x += w;
-        }
-
-        symbolHeight = h;
-
-        if (mode == ToFMode.ITF14) {
-            // Add bounding box
-            Rectangle topBar = new Rectangle(0, baseY, symbolWidth, 4);
-            Rectangle bottomBar = new Rectangle(0, baseY + symbolHeight - 4, symbolWidth, 4);
-            Rectangle leftBar = new Rectangle(0, baseY, 4, symbolHeight);
-            Rectangle rightBar = new Rectangle(symbolWidth - 4, baseY, 4, symbolHeight);
-            addRectangle(topBar);
-            addRectangle(bottomBar);
-            addRectangle(leftBar);
-            addRectangle(rightBar);
-        }
-
-        if (humanReadableLocation != NONE && !readable.isEmpty()) {
-            double baseline;
-            if (humanReadableLocation == TOP) {
-                baseline = fontSize;
-            } else {
-                baseline = symbolHeight + fontSize;
-            }
-            texts.add(new TextBox(0, baseline, symbolWidth, readable, humanReadableAlignment));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected double getModuleWidth(int originalWidth) {
-        if (originalWidth == 1) {
-            return 1;
-        } else {
-            return moduleWidthRatio;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

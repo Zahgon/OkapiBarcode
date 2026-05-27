@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.backend.HumanReadableLocation.NONE;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.TOP;
-
 import uk.org.okapibarcode.graphics.Rectangle;
 import uk.org.okapibarcode.graphics.TextBox;
 
@@ -33,23 +31,27 @@ import uk.org.okapibarcode.graphics.TextBox;
  */
 public class Postnet extends Symbol {
 
-    /** Whether to encode a POSTNET or PLANET barcode. */
+    /**
+     * Whether to encode a POSTNET or PLANET barcode.
+     */
     public enum Mode {
-        /** Encode a PLANET barcode. */
+
+        /**
+         * Encode a PLANET barcode.
+         */
         PLANET,
-        /** Encode a POSTNET barcode. */
+        /**
+         * Encode a POSTNET barcode.
+         */
         POSTNET
     }
 
-    private static final String[] PN_TABLE = {
-        "LLSSS", "SSSLL", "SSLSL", "SSLLS", "SLSSL", "SLSLS", "SLLSS", "LSSSL", "LSSLS", "LSLSS"
-    };
+    private static final String[] PN_TABLE = { "LLSSS", "SSSLL", "SSLSL", "SSLLS", "SLSSL", "SLSLS", "SLLSS", "LSSSL", "LSSLS", "LSLSS" };
 
-    private static final String[] PL_TABLE = {
-        "SSLLL", "LLLSS", "LLSLS", "LLSSL", "LSLLS", "LSLSL", "LSSLL", "SLLLS", "SLLSL", "SLSLL"
-    };
+    private static final String[] PL_TABLE = { "SSLLL", "LLLSS", "LLSLS", "LLSSL", "LSLLS", "LSLSL", "LSSLL", "SLLLS", "SLLSL", "SLSLL" };
 
     private Mode mode;
+
     private double moduleWidthRatio;
 
     /**
@@ -77,7 +79,7 @@ public class Postnet extends Symbol {
      * @param mode the barcode mode (PLANET or POSTNET)
      */
     public void setMode(Mode mode) {
-        this.mode = mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -86,7 +88,7 @@ public class Postnet extends Symbol {
      * @return the barcode mode (PLANET or POSTNET)
      */
     public Mode getMode() {
-        return mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -95,7 +97,7 @@ public class Postnet extends Symbol {
      * @param moduleWidthRatio the ratio of space width to bar width
      */
     public void setModuleWidthRatio(double moduleWidthRatio) {
-        this.moduleWidthRatio = moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -104,43 +106,34 @@ public class Postnet extends Symbol {
      * @return the ratio of space width to bar width
      */
     public double getModuleWidthRatio() {
-        return moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-        String[] table = (mode == Mode.POSTNET ? PN_TABLE : PL_TABLE);
-        encode(table);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void encode(String[] table) {
-
         if (content.length() > 38) {
             throw OkapiInputException.inputTooLong();
         }
-
         if (!content.matches("[0-9]*")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         int sum = 0;
         int destLen = 7 + (content.length() * 5);
         StringBuilder dest = new StringBuilder(destLen);
         dest.append('L');
-
         for (int i = 0; i < content.length(); i++) {
             dest.append(table[content.charAt(i) - '0']);
             sum += content.charAt(i) - '0';
         }
-
         int checkDigit = (10 - (sum % 10)) % 10;
         infoLine("Check Digit: ", checkDigit);
-
         dest.append(table[checkDigit]);
         dest.append('L');
-
         assert dest.length() == destLen;
-
         infoLine("Encoding: ", dest);
         readable = content;
         pattern = new String[] { dest.toString() };
@@ -150,45 +143,6 @@ public class Postnet extends Symbol {
 
     @Override
     protected void plotSymbol() {
-        int xBlock, shortHeight;
-        double x, y, w, h, dx;
-
-        resetPlotElements();
-
-        int baseY;
-        if (humanReadableLocation == TOP) {
-            baseY = getTheoreticalHumanReadableHeight();
-        } else {
-            baseY = 0;
-        }
-
-        x = 0;
-        w = moduleWidth;
-        dx = (1 + moduleWidthRatio) * w;
-        shortHeight = (int) (0.4 * defaultHeight);
-        for (xBlock = 0; xBlock < pattern[0].length(); xBlock++) {
-            if (pattern[0].charAt(xBlock) == 'L') {
-                y = baseY;
-                h = defaultHeight;
-            } else {
-                y = baseY + defaultHeight - shortHeight;
-                h = shortHeight;
-            }
-            addRectangle(new Rectangle(x, y, w, h));
-            x += dx;
-        }
-
-        symbolWidth = (int) Math.ceil(((pattern[0].length() - 1) * dx) + w); // final bar doesn't need extra whitespace
-        symbolHeight = defaultHeight;
-
-        if (humanReadableLocation != NONE && !readable.isEmpty()) {
-            double baseline;
-            if (humanReadableLocation == TOP) {
-                baseline = fontSize;
-            } else {
-                baseline = symbolHeight + fontSize;
-            }
-            texts.add(new TextBox(0, baseline, symbolWidth, readable, humanReadableAlignment));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

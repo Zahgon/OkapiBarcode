@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.util;
 
 /**
@@ -36,6 +35,6 @@ public final class Doubles {
      * @return whether or not the two doubles are approximately equal (to within 0.0001)
      */
     public static boolean roughlyEqual(double d1, double d2) {
-        return Math.abs(d1 - d2) < 0.0001;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

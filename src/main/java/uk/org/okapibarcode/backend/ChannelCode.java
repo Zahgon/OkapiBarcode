@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -28,8 +27,11 @@ public class ChannelCode extends Symbol {
     private int preferredNumberOfChannels = 3;
 
     private int[] space = new int[11];
+
     private int[] bar = new int[11];
+
     private int currentValue;
+
     private int targetValue;
 
     /**
@@ -39,10 +41,7 @@ public class ChannelCode extends Symbol {
      * @param channels the preferred number of channels (3 to 8, inclusive)
      */
     public void setPreferredNumberOfChannels(int channels) {
-        if (channels < 3 || channels > 8) {
-            throw new IllegalArgumentException("Invalid number of channels: " + channels);
-        }
-        preferredNumberOfChannels = channels;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -51,75 +50,12 @@ public class ChannelCode extends Symbol {
      * @return the preferred number of channels used to encode data
      */
     public int getPreferredNumberOfChannels() {
-        return preferredNumberOfChannels;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-
-        if (content.length() > 7) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        if (!content.matches("[0-9]+")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        int channels = preferredNumberOfChannels;
-        targetValue = Integer.parseInt(content);
-        switch (channels) {
-            case 3:
-                if (targetValue > 26) {
-                    channels++;
-                }
-            case 4:
-                if (targetValue > 292) {
-                    channels++;
-                }
-            case 5:
-                if (targetValue > 3493) {
-                    channels++;
-                }
-            case 6:
-                if (targetValue > 44072) {
-                    channels++;
-                }
-            case 7:
-                if (targetValue > 576688) {
-                    channels++;
-                }
-            case 8:
-                if (targetValue > 7742862) {
-                    channels++;
-                }
-        }
-
-        if (channels == 9) {
-            throw new OkapiInputException("Value out of range");
-        }
-
-        infoLine("Channels Used: ", channels);
-
-        for (int i = 0; i < 11; i++) {
-            bar[i] = 0;
-            space[i] = 0;
-        }
-
-        bar[0] = space[1] = bar[1] = space[2] = bar[2] = 1;
-        currentValue = 0;
-        pattern = new String[1];
-        nextSpace(channels, 3, channels, channels);
-
-        StringBuilder text = new StringBuilder();
-        int leadingZeroCount = channels - 1 - content.length();
-        for (int i = 0; i < leadingZeroCount; i++) {
-            text.append('0');
-        }
-        text.append(content);
-
-        readable = text.toString();
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void nextSpace(int channels, int i, int maxSpace, int maxBar) {

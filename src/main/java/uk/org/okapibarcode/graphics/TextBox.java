@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.graphics;
 
 import java.util.Objects;
@@ -26,19 +25,29 @@ import java.util.Objects;
  */
 public final class TextBox {
 
-    /** The X position of the text's left boundary. */
+    /**
+     * The X position of the text's left boundary.
+     */
     public final double x;
 
-    /** The Y position of the text baseline. */
+    /**
+     * The Y position of the text baseline.
+     */
     public final double y;
 
-    /** The width of the text box. */
+    /**
+     * The width of the text box.
+     */
     public final double width;
 
-    /** The text value. */
+    /**
+     * The text value.
+     */
     public final String text;
 
-    /** The text alignment. */
+    /**
+     * The text alignment.
+     */
     public final TextAlignment alignment;
 
     /**
@@ -58,25 +67,27 @@ public final class TextBox {
         this.alignment = Objects.requireNonNull(alignment);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof TextBox)) {
-            return false;
-        }
-        TextBox t = (TextBox) other;
-        return x == t.x && y == t.y && width == t.width && Objects.equals(text, t.text) && alignment == t.alignment;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, width, text, alignment);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
-        return "TextBox[x=" + x + ", y=" + y + ", width=" + width + ", text=" + text + ", alignment=" + alignment + "]";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -26,27 +25,39 @@ package uk.org.okapibarcode.backend;
  */
 public class MsiPlessey extends Symbol {
 
-    /** The types of MSI Plessey check digits available. */
+    /**
+     * The types of MSI Plessey check digits available.
+     */
     public enum CheckDigit {
-        /** No check digit. */
+
+        /**
+         * No check digit.
+         */
         NONE,
-        /** One mod 10 check digit. */
+        /**
+         * One mod 10 check digit.
+         */
         MOD10,
-        /** Two mod 10 check digits. */
+        /**
+         * Two mod 10 check digits.
+         */
         MOD10_MOD10,
-        /** One mod 11 check digit. */
+        /**
+         * One mod 11 check digit.
+         */
         MOD11,
-        /** One mod 11 check digit and one mod 10 check digit. */
+        /**
+         * One mod 11 check digit and one mod 10 check digit.
+         */
         MOD11_MOD10
     }
 
-    private final static String[] MSI_PLESS_TABLE = {
-        "12121212", "12121221", "12122112", "12122121", "12211212",
-        "12211221", "12212112", "12212121", "21121212", "21121221"
-    };
+    private final static String[] MSI_PLESS_TABLE = { "12121212", "12121221", "12122112", "12122121", "12211212", "12211221", "12212112", "12212121", "21121212", "21121221" };
 
     private CheckDigit checkDigit = CheckDigit.NONE;
+
     private boolean checkDigitInHumanReadableText = true;
+
     private double moduleWidthRatio = 2;
 
     /**
@@ -55,7 +66,7 @@ public class MsiPlessey extends Symbol {
      * @param checkDigit the type of check digit to add to symbol
      */
     public void setCheckDigit(CheckDigit checkDigit) {
-        this.checkDigit = checkDigit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -64,7 +75,7 @@ public class MsiPlessey extends Symbol {
      * @return the check digit scheme being used
      */
     public CheckDigit getCheckDigit() {
-        return checkDigit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -73,7 +84,7 @@ public class MsiPlessey extends Symbol {
      * @param checkDigitInHumanReadableText whether or not the check digit is shown in the human-readable text
      */
     public void setCheckDigitInHumanReadableText(boolean checkDigitInHumanReadableText) {
-        this.checkDigitInHumanReadableText = checkDigitInHumanReadableText;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -82,7 +93,7 @@ public class MsiPlessey extends Symbol {
      * @return whether or not the check digit is shown in the human-readable text
      */
     public boolean getCheckDigitInHumanReadableText() {
-        return checkDigitInHumanReadableText;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -92,7 +103,7 @@ public class MsiPlessey extends Symbol {
      * @param moduleWidthRatio the ratio of wide bar width to narrow bar width
      */
     public void setModuleWidthRatio(double moduleWidthRatio) {
-        this.moduleWidthRatio = moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -101,80 +112,35 @@ public class MsiPlessey extends Symbol {
      * @return the ratio of wide bar width to narrow bar width
      */
     public double getModuleWidthRatio() {
-        return moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void encode() {
-
-        if (!content.matches("[0-9]*")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        int length = content.length();
-        int maxExpectedLength = 2 + ((length + maxCheckDigits(checkDigit)) * 8) + 3;
-        StringBuilder intermediate = new StringBuilder(maxExpectedLength);
-        intermediate.append("21"); // Start
-
-        for (int i = 0; i < length; i++) {
-            char c = content.charAt(i);
-            int n = Character.getNumericValue(c);
-            intermediate.append(MSI_PLESS_TABLE[n]);
-        }
-
-        String data = content;
-
-        if (checkDigit == CheckDigit.MOD10 || checkDigit == CheckDigit.MOD10_MOD10) {
-            /* Add a Modulo-10 check digit */
-            int checkDigit = calcMod10(content);
-            intermediate.append(MSI_PLESS_TABLE[checkDigit]);
-            data += checkDigit;
-        }
-
-        if (checkDigit == CheckDigit.MOD11 || checkDigit == CheckDigit.MOD11_MOD10) {
-            /* Add a Modulo-11 check digit */
-            int checkDigit = calcMod11(content);
-            data += checkDigit;
-            if (checkDigit == 10) {
-                intermediate.append(MSI_PLESS_TABLE[1]);
-                intermediate.append(MSI_PLESS_TABLE[0]);
-            } else {
-                intermediate.append(MSI_PLESS_TABLE[checkDigit]);
-            }
-        }
-
-        if (checkDigit == CheckDigit.MOD10_MOD10 || checkDigit == CheckDigit.MOD11_MOD10) {
-            /* Add a second Modulo-10 check digit */
-            int checkDigit = calcMod10(data);
-            intermediate.append(MSI_PLESS_TABLE[checkDigit]);
-            data += checkDigit;
-        }
-
-        intermediate.append("121"); // Stop
-
-        assert maxExpectedLength >= intermediate.length();
-        assert maxExpectedLength - intermediate.length() <= 8;
-
-        readable = (checkDigitInHumanReadableText ? data : content);
-        pattern = new String[] { intermediate.toString() };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static int maxCheckDigits(CheckDigit scheme) {
-        switch (scheme) {
-            case NONE: return 0;
-            case MOD10: return 1;
-            case MOD11: return 2;
-            case MOD10_MOD10: return 2;
-            case MOD11_MOD10: return 3;
-            default: throw new OkapiInternalException("Unknown check digit scheme: " + scheme);
+        switch(scheme) {
+            case NONE:
+                return 0;
+            case MOD10:
+                return 1;
+            case MOD11:
+                return 2;
+            case MOD10_MOD10:
+                return 2;
+            case MOD11_MOD10:
+                return 3;
+            default:
+                throw new OkapiInternalException("Unknown check digit scheme: " + scheme);
         }
     }
 
     private static int calcMod10(String s) {
-
         int sum = 0;
         int parity = s.length() % 2;
         for (int i = s.length() - 1; i >= 0; i--) {
@@ -187,17 +153,14 @@ public class MsiPlessey extends Symbol {
                 sum += val / 10;
             }
         }
-
         int checkDigit = 10 - (sum % 10);
         if (checkDigit == 10) {
             checkDigit = 0;
         }
-
         return checkDigit;
     }
 
     private static int calcMod11(String s) {
-
         int sum = 0;
         int weight = 2;
         for (int i = s.length() - 1; i >= 0; i--) {
@@ -207,22 +170,18 @@ public class MsiPlessey extends Symbol {
                 weight = 2;
             }
         }
-
         int checkDigit = 11 - (sum % 11);
         if (checkDigit == 11) {
             checkDigit = 0;
         }
-
         return checkDigit;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected double getModuleWidth(int originalWidth) {
-        if (originalWidth == 1) {
-            return 1;
-        } else {
-            return moduleWidthRatio;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

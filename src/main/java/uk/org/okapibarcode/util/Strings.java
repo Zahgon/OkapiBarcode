@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.util;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
-
 import java.nio.charset.StandardCharsets;
-
 import uk.org.okapibarcode.backend.OkapiInputException;
 
 /**
@@ -42,61 +39,7 @@ public final class Strings {
      * @see #unescape(String, boolean)
      */
     public static String escape(String s) {
-        StringBuilder sb = new StringBuilder(s.length() + 10);
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '\u0000':
-                    sb.append("\\0"); // null
-                    break;
-                case '\u0004':
-                    sb.append("\\E"); // end of transmission
-                    break;
-                case '\u0007':
-                    sb.append("\\a"); // bell
-                    break;
-                case '\u0008':
-                    sb.append("\\b"); // backspace
-                    break;
-                case '\u0009':
-                    sb.append("\\t"); // horizontal tab
-                    break;
-                case '\n':
-                    sb.append("\\n"); // line feed
-                    break;
-                case '\u000b':
-                    sb.append("\\v"); // vertical tab
-                    break;
-                case '\u000c':
-                    sb.append("\\f"); // form feed
-                    break;
-                case '\r':
-                    sb.append("\\r"); // carriage return
-                    break;
-                case '\u001b':
-                    sb.append("\\e"); // escape
-                    break;
-                case '\u001d':
-                    sb.append("\\G"); // group separator
-                    break;
-                case '\u001e':
-                    sb.append("\\R"); // record separator
-                    break;
-                case '\\':
-                    sb.append("\\\\"); // escape the escape character
-                    break;
-                default:
-                    if (c >= 32 && c <= 126) {
-                        sb.append(c); // printable ASCII
-                    } else {
-                        byte[] bytes = String.valueOf(c).getBytes(ISO_8859_1);
-                        String hex = String.format("%02X", bytes[0] & 0xFF);
-                        sb.append("\\x").append(hex);
-                    }
-                    break;
-            }
-        }
-        return sb.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -109,118 +52,7 @@ public final class Strings {
      * @see #escape(String)
      */
     public static String unescape(String s, boolean lenient) {
-        StringBuilder sb = new StringBuilder(s.length());
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c != '\\') {
-                sb.append(c);
-            } else {
-                if (i + 1 >= s.length()) {
-                    String msg = "Error processing escape sequences: expected escape character, found end of string";
-                    throw new OkapiInputException(msg);
-                } else {
-                    char c2 = s.charAt(i + 1);
-                    switch (c2) {
-                        case '0':
-                            sb.append('\u0000'); // null
-                            i++;
-                            break;
-                        case 'E':
-                            sb.append('\u0004'); // end of transmission
-                            i++;
-                            break;
-                        case 'a':
-                            sb.append('\u0007'); // bell
-                            i++;
-                            break;
-                        case 'b':
-                            sb.append('\u0008'); // backspace
-                            i++;
-                            break;
-                        case 't':
-                            sb.append('\u0009'); // horizontal tab
-                            i++;
-                            break;
-                        case 'n':
-                            sb.append('\n'); // line feed
-                            i++;
-                            break;
-                        case 'v':
-                            sb.append('\u000b'); // vertical tab
-                            i++;
-                            break;
-                        case 'f':
-                            sb.append('\u000c'); // form feed
-                            i++;
-                            break;
-                        case 'r':
-                            sb.append('\r'); // carriage return
-                            i++;
-                            break;
-                        case 'e':
-                            sb.append('\u001b'); // escape
-                            i++;
-                            break;
-                        case 'G':
-                            sb.append('\u001d'); // group separator
-                            i++;
-                            break;
-                        case 'R':
-                            sb.append('\u001e'); // record separator
-                            i++;
-                            break;
-                        case '\\':
-                            sb.append('\\'); // escape the escape character
-                            i++;
-                            break;
-                        case 'x':
-                            if (i + 3 >= s.length()) {
-                                String msg = "Error processing escape sequences: expected hex sequence, found end of string";
-                                throw new OkapiInputException(msg);
-                            } else {
-                                char c3 = s.charAt(i + 2);
-                                char c4 = s.charAt(i + 3);
-                                if (isHex(c3) && isHex(c4)) {
-                                    byte b = (byte) Integer.parseInt("" + c3 + c4, 16);
-                                    sb.append(new String(new byte[] { b }, StandardCharsets.ISO_8859_1));
-                                    i += 3;
-                                } else {
-                                    String msg = "Error processing escape sequences: expected hex sequence, found '" + c3 + c4 + "'";
-                                    throw new OkapiInputException(msg);
-                                }
-                            }
-                            break;
-                        case 'u':
-                            if (i + 5 >= s.length()) {
-                                String msg = "Error processing escape sequences: expected unicode hex sequence, found end of string";
-                                throw new OkapiInputException(msg);
-                            } else {
-                                char c3 = s.charAt(i + 2);
-                                char c4 = s.charAt(i + 3);
-                                char c5 = s.charAt(i + 4);
-                                char c6 = s.charAt(i + 5);
-                                if (isHex(c3) && isHex(c4) && isHex(c5) && isHex(c6)) {
-                                    byte b1 = (byte) Integer.parseInt("" + c3 + c4, 16);
-                                    byte b2 = (byte) Integer.parseInt("" + c5 + c6, 16);
-                                    sb.append(new String(new byte[] { b1, b2 }, StandardCharsets.UTF_16BE));
-                                    i += 5;
-                                } else {
-                                    String msg = "Error processing escape sequences: expected unicode hex sequence, found '" + c3 + c4 + c5 + c6 + "'";
-                                    throw new OkapiInputException(msg);
-                                }
-                            }
-                            break;
-                        default:
-                            if (lenient) {
-                                sb.append(c);
-                            } else {
-                                throw new OkapiInputException("Error processing escape sequences: expected valid escape character, found '" + c2 + "'");
-                            }
-                    }
-                }
-            }
-        }
-        return sb.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static boolean isHex(char c) {
@@ -234,16 +66,7 @@ public final class Strings {
      * @return the modified string
      */
     public static StringBuilder deleteLastLine(StringBuilder s) {
-        int i = s.lastIndexOf("\n");
-        if (i != -1) {
-            i = s.lastIndexOf("\n", i - 1);
-            if (i != -1) {
-                s.delete(i + 1, s.length());
-            } else {
-                s.setLength(0); // clear
-            }
-        }
-        return s;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -254,14 +77,7 @@ public final class Strings {
      * @param digits the number of digits to pad to
      */
     public static void binaryAppend(StringBuilder s, int value, int digits) {
-        int start = 0x01 << (digits - 1);
-        for (int i = 0; i < digits; i++) {
-            if ((value & (start >> i)) == 0) {
-                s.append('0');
-            } else {
-                s.append('1');
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -271,16 +87,7 @@ public final class Strings {
      * @return the input string, with non-ASCII and non-printable characters replaced
      */
     public static String toPrintableAscii(String s) {
-        StringBuilder out = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c >= 32 && c <= 126) {
-                out.append(c);
-            } else {
-                out.append("\\u").append(String.format("%04x", (int) c));
-            }
-        }
-        return out.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -291,10 +98,6 @@ public final class Strings {
      * @return the number of occurrences of the specified substring within the specified string
      */
     public static int count(String s, String substring) {
-        int count = 0;
-        for (int i = s.indexOf(substring); i != -1; i = s.indexOf(substring, i + substring.length())) {
-            count++;
-        }
-        return count;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

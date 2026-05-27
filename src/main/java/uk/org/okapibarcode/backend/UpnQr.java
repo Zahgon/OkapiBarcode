@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -37,38 +36,26 @@ public class UpnQr extends QrCode {
 
     @Override
     public void setEciMode(int eciMode) {
-        if (eciMode != 4) {
-            throw new OkapiInputException("UPN QR requires ECI mode 4");
-        }
-        super.setEciMode(eciMode);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setPreferredVersion(int version) {
-        if (version != 15) {
-            throw new OkapiInputException("UPN QR requires version 15");
-        }
-        super.setPreferredVersion(version);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setPreferredEccLevel(EccLevel preferredEccLevel) {
-        if (preferredEccLevel != EccLevel.M) {
-            throw new OkapiInputException("UPN QR requires ECC level M");
-        }
-        super.setPreferredEccLevel(preferredEccLevel);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setForceByteCompaction(boolean forceByteCompaction) {
-        if (!forceByteCompaction) {
-            throw new OkapiInputException("UPN QR requires forced byte compaction");
-        }
-        super.setForceByteCompaction(forceByteCompaction);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supportsGs1() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

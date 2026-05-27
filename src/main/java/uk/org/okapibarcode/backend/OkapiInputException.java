@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -28,7 +27,9 @@ package uk.org.okapibarcode.backend;
  */
 public class OkapiInputException extends OkapiException {
 
-    /** Serial version UID. */
+    /**
+     * Serial version UID.
+     */
     private static final long serialVersionUID = 5881510760716621289L;
 
     /**
@@ -46,7 +47,7 @@ public class OkapiInputException extends OkapiException {
      * @return a new exception instance for scenarios where the user provided un-encodable characters
      */
     public static OkapiInputException invalidCharactersInInput() {
-        return new OkapiInputException("Invalid characters in input data");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -55,6 +56,6 @@ public class OkapiInputException extends OkapiException {
      * @return a new exception instance for scenarios where the user provided too much data
      */
     public static OkapiInputException inputTooLong() {
-        return new OkapiInputException("Input data too long");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

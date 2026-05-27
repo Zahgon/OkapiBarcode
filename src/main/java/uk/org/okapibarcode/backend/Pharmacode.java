@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -36,43 +35,6 @@ public class Pharmacode extends Symbol {
 
     @Override
     protected void encode() {
-
-        if (content.length() > 6) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        if (!content.matches("[0-9]+")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        int tester = Integer.parseInt(content);
-        if (tester < 3 || tester > 131070) {
-            throw new OkapiInputException("Data out of range");
-        }
-
-        StringBuilder inter = new StringBuilder();
-        do {
-            if ((tester & 1) == 0) {
-                inter.append('W');
-                tester = (tester - 2) / 2;
-            } else {
-                inter.append('N');
-                tester = (tester - 1) / 2;
-            }
-        } while (tester != 0);
-
-        StringBuilder dest = new StringBuilder(inter.length() * 2);
-        for (int i = inter.length() - 1; i >= 0; i--) {
-            if (inter.charAt(i) == 'W') {
-                dest.append("32");
-            } else {
-                dest.append("12");
-            }
-        }
-
-        readable = "";
-        pattern = new String[] { dest.toString() };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

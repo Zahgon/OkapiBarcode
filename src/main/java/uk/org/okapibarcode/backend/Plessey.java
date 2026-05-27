@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -26,6 +25,7 @@ package uk.org.okapibarcode.backend;
 public class Plessey extends Symbol {
 
     private boolean checkDigitInHumanReadableText = true;
+
     private double moduleWidthRatio = 2;
 
     /**
@@ -34,7 +34,7 @@ public class Plessey extends Symbol {
      * @param checkDigitInHumanReadableText whether or not the check digit is shown in the human-readable text
      */
     public void setCheckDigitInHumanReadableText(boolean checkDigitInHumanReadableText) {
-        this.checkDigitInHumanReadableText = checkDigitInHumanReadableText;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -43,7 +43,7 @@ public class Plessey extends Symbol {
      * @return whether or not the check digit is shown in the human-readable text
      */
     public boolean getCheckDigitInHumanReadableText() {
-        return checkDigitInHumanReadableText;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -53,7 +53,7 @@ public class Plessey extends Symbol {
      * @param moduleWidthRatio the ratio of wide bar width to narrow bar width
      */
     public void setModuleWidthRatio(double moduleWidthRatio) {
-        this.moduleWidthRatio = moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -62,80 +62,22 @@ public class Plessey extends Symbol {
      * @return the ratio of wide bar width to narrow bar width
      */
     public double getModuleWidthRatio() {
-        return moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void encode() {
-
-        if (!content.matches("[0-9A-F]*")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        int length = content.length();
-        int maxExpectedLength = 8 + (length * 8) + 16 + 3 + 8;
-        StringBuilder intermediate = new StringBuilder(maxExpectedLength);
-        intermediate.append("21211221"); // start
-
-        int[] bits = new int[4 * (length + 2)];
-        String[] patterns = { "12", "21" }; // 0, 1
-
-        for (int i = 0; i < length; i++) {
-            char c = content.charAt(i);
-            int n = Character.getNumericValue(c);
-            // update pattern
-            intermediate.append(patterns[(n >> 0) & 1]);
-            intermediate.append(patterns[(n >> 1) & 1]);
-            intermediate.append(patterns[(n >> 2) & 1]);
-            intermediate.append(patterns[(n >> 3) & 1]);
-            // update check digit bits
-            bits[(4 * i) + 0] = (n >> 0) & 1;
-            bits[(4 * i) + 1] = (n >> 1) & 1;
-            bits[(4 * i) + 2] = (n >> 2) & 1;
-            bits[(4 * i) + 3] = (n >> 3) & 1;
-        }
-
-        // calculate check digit
-        int[] generator = { 1, 1, 1, 1, 0, 1, 0, 0, 1 };
-        for (int i = 0; i < 4 * length; i++) {
-            if (bits[i] == 1) {
-                for (int j = 0; j < 9; j++) {
-                    bits[i + j] ^= generator[j];
-                }
-            }
-        }
-
-        // add check digit to pattern
-        for (int i = bits.length - 8; i < bits.length; i++) {
-            intermediate.append(patterns[bits[i]]);
-        }
-
-        intermediate.append("201").append("21211212"); // termination + reverse start
-        assert maxExpectedLength == intermediate.length();
-
-        readable = content;
-        if (checkDigitInHumanReadableText) {
-            int i1 = bits[bits.length - 8] | (bits[bits.length - 7] << 1) | (bits[bits.length - 6] << 2) | (bits[bits.length - 5] << 3);
-            int i2 = bits[bits.length - 4] | (bits[bits.length - 3] << 1) | (bits[bits.length - 2] << 2) | (bits[bits.length - 1] << 3);
-            readable += Integer.toHexString(i1).toUpperCase();
-            readable += Integer.toHexString(i2).toUpperCase();
-        }
-
-        pattern = new String[] { intermediate.toString() };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected double getModuleWidth(int originalWidth) {
-        if (originalWidth == 1) {
-            return 1;
-        } else if (originalWidth == 0) {
-            return 0;
-        } else {
-            return moduleWidthRatio;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

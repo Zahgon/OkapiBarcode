@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.util.Arrays.positionOf;
@@ -29,25 +28,28 @@ import static uk.org.okapibarcode.util.Arrays.positionOf;
  */
 public class Code11 extends Symbol {
 
-    private static final String[] CODE_11_TABLE = {
-        "111121", "211121", "121121", "221111", "112121", "212111",
-        "122111", "111221", "211211", "211111", "112111"
-    };
+    private static final String[] CODE_11_TABLE = { "111121", "211121", "121121", "221111", "112121", "212111", "122111", "111221", "211211", "211111", "112111" };
 
-    private static final char[] CHARACTER_SET = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'
-    };
+    private static final char[] CHARACTER_SET = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-' };
 
-    /** Ratio of wide bar width to narrow bar width. */
+    /**
+     * Ratio of wide bar width to narrow bar width.
+     */
     private double moduleWidthRatio = 2;
 
-    /** The number of check digits to calculate ({@code 1} or {@code 2}). */
+    /**
+     * The number of check digits to calculate ({@code 1} or {@code 2}).
+     */
     private int checkDigitCount = 2;
 
-    /** Optional start delimiter to be shown in the human-readable text. */
+    /**
+     * Optional start delimiter to be shown in the human-readable text.
+     */
     private Character startDelimiter;
 
-    /** Optional stop delimiter to be shown in the human-readable text. */
+    /**
+     * Optional stop delimiter to be shown in the human-readable text.
+     */
     private Character stopDelimiter;
 
     /**
@@ -57,7 +59,7 @@ public class Code11 extends Symbol {
      * @param moduleWidthRatio the ratio of wide bar width to narrow bar width
      */
     public void setModuleWidthRatio(double moduleWidthRatio) {
-        this.moduleWidthRatio = moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -66,7 +68,7 @@ public class Code11 extends Symbol {
      * @return the ratio of wide bar width to narrow bar width
      */
     public double getModuleWidthRatio() {
-        return moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -75,10 +77,7 @@ public class Code11 extends Symbol {
      * @param checkDigitCount the number of check digits to calculate
      */
     public void setCheckDigitCount(int checkDigitCount) {
-        if (checkDigitCount < 1 || checkDigitCount > 2) {
-            throw new IllegalArgumentException("Check digit count must be 1 or 2.");
-        }
-        this.checkDigitCount = checkDigitCount;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -87,7 +86,7 @@ public class Code11 extends Symbol {
      * @return the number of check digits to calculate
      */
     public int getCheckDigitCount() {
-        return checkDigitCount;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -96,7 +95,7 @@ public class Code11 extends Symbol {
      * @param startDelimiter an optional start delimiter to be shown in the human-readable text
      */
     public void setStartDelimiter(Character startDelimiter) {
-        this.startDelimiter = startDelimiter;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -105,7 +104,7 @@ public class Code11 extends Symbol {
      * @return the optional start delimiter to be shown in the human-readable text
      */
     public Character getStartDelimiter() {
-        return startDelimiter;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -114,7 +113,7 @@ public class Code11 extends Symbol {
      * @param stopDelimiter an optional stop delimiter to be shown in the human-readable text
      */
     public void setStopDelimiter(Character stopDelimiter) {
-        this.stopDelimiter = stopDelimiter;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -123,54 +122,15 @@ public class Code11 extends Symbol {
      * @return the optional stop delimiter to be shown in the human-readable text
      */
     public Character getStopDelimiter() {
-        return stopDelimiter;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void encode() {
-
-        if (!content.matches("[0-9-]*")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        String horizontalSpacing = "112211";
-        String humanReadable = content;
-        int length = content.length();
-        int[] weight = new int[length + 1];
-
-        for (int i = 0; i < length; i++) {
-            char c = content.charAt(i);
-            weight[i] = positionOf(c, CHARACTER_SET);
-            horizontalSpacing += CODE_11_TABLE[weight[i]];
-        }
-
-        int checkDigitC = getCheckDigitC(weight, length);
-        horizontalSpacing += CODE_11_TABLE[checkDigitC];
-        humanReadable += CHARACTER_SET[checkDigitC];
-        infoLine("Check Digit C: ", checkDigitC);
-
-        if (checkDigitCount == 2) {
-            weight[length] = checkDigitC;
-            int checkDigitK = getCheckDigitK(weight, length + 1);
-            horizontalSpacing += CODE_11_TABLE[checkDigitK];
-            humanReadable += CHARACTER_SET[checkDigitK];
-            infoLine("Check Digit K: ", checkDigitK);
-        }
-
-        horizontalSpacing += "112211";
-
-        readable = humanReadable;
-        if (startDelimiter != null) {
-            readable = startDelimiter + readable;
-        }
-        if (stopDelimiter != null) {
-            readable = readable + stopDelimiter;
-        }
-
-        pattern = new String[] { horizontalSpacing };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static int getCheckDigitC(int[] weight, int length) {
@@ -199,19 +159,19 @@ public class Code11 extends Symbol {
         return countK % 11;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected double getModuleWidth(int originalWidth) {
-        if (originalWidth == 1) {
-            return 1;
-        } else {
-            return moduleWidthRatio;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected int[] getCodewords() {
-        return getPatternAsCodewords(6);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

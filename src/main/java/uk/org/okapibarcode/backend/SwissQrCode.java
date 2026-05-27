@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
@@ -31,67 +30,34 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class SwissQrCode extends QrCode {
 
     public SwissQrCode() {
-        minVersion = 6; // min size to fit logo
-        preferredEccLevel = EccLevel.M; // mandated by spec
+        // min size to fit logo
+        minVersion = 6;
+        // mandated by spec
+        preferredEccLevel = EccLevel.M;
     }
 
     @Override
     public void setPreferredEccLevel(EccLevel preferredEccLevel) {
-        if (preferredEccLevel != EccLevel.M) {
-            throw new OkapiInputException("Swiss QR Code requires ECC level M");
-        }
-        super.setPreferredEccLevel(preferredEccLevel);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setPreferredVersion(int version) {
-        if (version < minVersion) {
-            throw new OkapiInputException("Swiss QR Code cannot fit logo at sizes less than 6");
-        }
-        super.setPreferredVersion(version);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supportsGs1() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public void setContent(String data) {
-        // Swiss QR Code requires coding data as "UTF-8 restricted to the Latin character set"
-        byte[] bytes = data.getBytes(UTF_8);
-        String data2 = new String(bytes, ISO_8859_1);
-        if (data2.length() > 997) {
-            throw OkapiInputException.inputTooLong();
-        }
-        super.setContent(data2);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void customize(int[] grid, int size) {
-        int w = (int) (size * (7d / 46d)); // 7x7 mm logo on a 46x46 mm symbol
-        if (w % 2 == 0) {
-            w++; // use odd logo sizes for better centering
-        }
-        int border = 1;
-        int field = w - (2 * border);
-        int pad = (int) Math.max(field * 6 / 32d, 1);
-        int thick = (int) Math.max(field * 6 / 32d, 1);
-        int len = (field - pad - pad - thick) / 2;
-        int start = (size + 1) * ((size - w) / 2);
-        for (int y = 0; y < w; y++) {
-            for (int x = 0; x < w; x++) {
-                int i = start + (y * size) + x;
-                if (x == 0 || x == w - 1 || y == 0 || y == w - 1 ||
-                   (x >= border + pad + len && x < w - border - pad - len && y >= border + pad && y < w - border - pad) ||
-                   (y >= border + pad + len && y < w - border - pad - len && x >= border + pad && x < w - border - pad)) {
-                    // borders and cross are white
-                    grid[i] = 0;
-                } else {
-                    // the rest is black
-                    grid[i] = 1;
-                }
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

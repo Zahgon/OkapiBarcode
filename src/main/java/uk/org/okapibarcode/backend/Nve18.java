@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.util.Strings.deleteLastLine;
@@ -29,56 +28,6 @@ public class Nve18 extends Symbol {
 
     @Override
     protected void encode() {
-
-        if (content.length() > 17) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        if (!content.matches("[0-9]+")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        // add leading zeroes
-        StringBuilder gs1 = new StringBuilder();
-        int zeros = 17 - content.length();
-        for (int i = 0; i < zeros; i++) {
-            gs1.append('0');
-        }
-        gs1.append(content);
-
-        // add modulus-10 check digit
-        int p = 0;
-        int count = 0;
-        for (int i = gs1.length() - 1; i >= 0; i--) {
-            int c = Character.getNumericValue(gs1.charAt(i));
-            if ((p % 2) == 0) {
-                c = c * 3;
-            }
-            count += c;
-            p++;
-        }
-        int check = 10 - (count % 10);
-        if (check == 10) {
-            check = 0;
-        }
-
-        infoLine("NVE Check Digit: ", check);
-
-        content = "[00]" + gs1 + check;
-
-        // defer to Code 128
-        Code128 code128 = new Code128();
-        code128.setDataType(DataType.GS1);
-        code128.setHumanReadableLocation(humanReadableLocation);
-        code128.setContent(content);
-
-        readable = code128.readable;
-        pattern = new String[] { code128.pattern[0] };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
-
-        deleteLastLine(code128.encodeInfo); // remove shape count, our shape count is added later
-        info(code128.encodeInfo);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

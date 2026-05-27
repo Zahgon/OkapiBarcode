@@ -19,3 +19,8 @@ bin/
 
 # Misc temp dir
 temp/
+
+.aider*
+logs/
+.commit0_scripts/
+.github/workflows/

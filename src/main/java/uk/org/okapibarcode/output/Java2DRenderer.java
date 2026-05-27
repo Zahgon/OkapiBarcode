@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.output;
 
 import static uk.org.okapibarcode.graphics.TextAlignment.CENTER;
 import static uk.org.okapibarcode.graphics.TextAlignment.JUSTIFY;
 import static uk.org.okapibarcode.util.Integers.normalizeRotation;
-
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -33,7 +31,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import uk.org.okapibarcode.backend.OkapiInternalException;
 import uk.org.okapibarcode.backend.Symbol;
 import uk.org.okapibarcode.graphics.Circle;
@@ -48,19 +45,29 @@ import uk.org.okapibarcode.graphics.TextBox;
  */
 public final class Java2DRenderer implements SymbolRenderer {
 
-    /** The graphics to render to. */
+    /**
+     * The graphics to render to.
+     */
     private final Graphics2D g2d;
 
-    /** The magnification factor to apply. */
+    /**
+     * The magnification factor to apply.
+     */
     private final double magnification;
 
-    /** The paper (background) color. */
+    /**
+     * The paper (background) color.
+     */
     private final Color paper;
 
-    /** The ink (foreground) color. */
+    /**
+     * The ink (foreground) color.
+     */
     private final Color ink;
 
-    /** The clockwise rotation of the symbol in degrees. */
+    /**
+     * The clockwise rotation of the symbol in degrees.
+     */
     private final int rotation;
 
     /**
@@ -103,112 +110,12 @@ public final class Java2DRenderer implements SymbolRenderer {
         this.rotation = normalizeRotation(rotation);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void render(Symbol symbol) {
-
-        int width = (int) (symbol.getWidth() * magnification);
-        int height = (int) (symbol.getHeight() * magnification);
-        int marginX = (int) (symbol.getQuietZoneHorizontal() * magnification);
-        int marginY = (int) (symbol.getQuietZoneVertical() * magnification);
-
-        AffineTransform oldTransform = null;
-        if (rotation != 0) {
-            oldTransform = g2d.getTransform();
-            switch (rotation) {
-                case 90:
-                    g2d.rotate(Math.PI / 2d);
-                    g2d.translate(0, -height);
-                    break;
-                case 180:
-                    g2d.rotate(Math.PI);
-                    g2d.translate(-width, -height);
-                    break;
-                case 270:
-                    g2d.rotate(Math.PI * 1.5d);
-                    g2d.translate(-width, 0);
-                    break;
-            }
-        }
-
-        Font f = symbol.getFont();
-        if (f != null) {
-            f = f.deriveFont((float) (f.getSize2D() * magnification));
-        } else {
-            f = new Font(symbol.getFontName(), Font.PLAIN, (int) (symbol.getFontSize() * magnification));
-            f = f.deriveFont(Collections.singletonMap(TextAttribute.TRACKING, 0));
-        }
-
-        Font oldFont = g2d.getFont();
-        java.awt.Color oldColor = g2d.getColor();
-
-        if (paper != null) {
-            g2d.setColor(new java.awt.Color(paper.red, paper.green, paper.blue));
-            g2d.fillRect(0, 0, width, height);
-            g2d.setColor(oldColor);
-        }
-
-        if (ink != null) {
-            g2d.setColor(new java.awt.Color(ink.red, ink.green, ink.blue));
-        }
-
-        for (Rectangle rect : symbol.getRectangles()) {
-            double x = (rect.x * magnification) + marginX;
-            double y = (rect.y * magnification) + marginY;
-            double w = rect.width * magnification;
-            double h = rect.height * magnification;
-            g2d.fillRect((int) x, (int) y, (int) w, (int) h);
-        }
-
-        for (TextBox text : symbol.getTexts()) {
-            TextAlignment alignment = (text.alignment == JUSTIFY && text.text.length() == 1 ? CENTER : text.alignment);
-            Font font = (alignment != JUSTIFY ? f : addTracking(f, text.width * magnification, text.text, g2d));
-            g2d.setFont(font);
-            float y = (float) (text.y * magnification) + marginY;
-            float x;
-            switch (alignment) {
-                case LEFT:
-                case JUSTIFY:
-                    x = (float) ((magnification * text.x) + marginX);
-                    break;
-                case RIGHT:
-                    x = (float) ((magnification * text.x) + (magnification * text.width) - getBounds(text, g2d).getWidth() + marginX);
-                    break;
-                case CENTER:
-                    x = (float) ((magnification * text.x) + (magnification * text.width / 2) - (getBounds(text, g2d).getWidth() / 2) + marginX);
-                    break;
-                default:
-                    throw new OkapiInternalException("Unknown alignment: " + alignment);
-            }
-            g2d.drawString(text.text, x, y);
-        }
-
-        if (!symbol.getHexagons().isEmpty()) {
-            Polygon polygon = new Polygon();
-            for (Hexagon hexagon : symbol.getHexagons()) {
-                for (int j = 0; j < 6; j++) {
-                    polygon.addPoint((int) ((hexagon.getX(j) * magnification) + marginX),
-                                     (int) ((hexagon.getY(j) * magnification) + marginY));
-                }
-                g2d.fill(polygon);
-                polygon.reset();
-            }
-        }
-
-        List< Circle > target = symbol.getTarget();
-        for (int i = 0; i + 1 < target.size(); i += 2) {
-            Ellipse2D.Double outer = adjust(target.get(i), magnification, marginX, marginY);
-            Ellipse2D.Double inner = adjust(target.get(i + 1), magnification, marginX, marginY);
-            Area area = new Area(outer);
-            area.subtract(new Area(inner));
-            g2d.fill(area);
-        }
-
-        g2d.setFont(oldFont);
-        g2d.setColor(oldColor);
-        if (oldTransform != null) {
-            g2d.setTransform(oldTransform);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static Rectangle2D getBounds(TextBox text, Graphics2D g2d) {

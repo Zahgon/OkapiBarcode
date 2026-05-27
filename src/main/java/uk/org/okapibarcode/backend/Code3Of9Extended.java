@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -26,29 +25,25 @@ package uk.org.okapibarcode.backend;
  */
 public class Code3Of9Extended extends Symbol {
 
-    /** The types of Code 39 Extended check digits available. */
+    /**
+     * The types of Code 39 Extended check digits available.
+     */
     public enum CheckDigit {
-        /** No check digit. */
+
+        /**
+         * No check digit.
+         */
         NONE,
-        /** One mod 43 check digit. */
+        /**
+         * One mod 43 check digit.
+         */
         MOD43
     }
 
-    private static final String[] E_CODE_39 = {
-        "%U", "$A", "$B", "$C", "$D", "$E", "$F", "$G", "$H", "$I", "$J", "$K",
-        "$L", "$M", "$N", "$O", "$P", "$Q", "$R", "$S", "$T", "$U", "$V", "$W",
-        "$X", "$Y", "$Z", "%A", "%B", "%C", "%D", "%E", " ", "/A", "/B", "/C",
-        "/D", "/E", "/F", "/G", "/H", "/I", "/J", "/K", "/L", "-", ".", "/O",
-        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/Z", "%F", "%G",
-        "%H", "%I", "%J", "%V", "A", "B", "C", "D", "E", "F", "G", "H", "I",
-        "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W",
-        "X", "Y", "Z", "%K", "%L", "%M", "%N", "%O", "%W", "+A", "+B", "+C",
-        "+D", "+E", "+F", "+G", "+H", "+I", "+J", "+K", "+L", "+M", "+N", "+O",
-        "+P", "+Q", "+R", "+S", "+T", "+U", "+V", "+W", "+X", "+Y", "+Z", "%P",
-        "%Q", "%R", "%S", "%T"
-    };
+    private static final String[] E_CODE_39 = { "%U", "$A", "$B", "$C", "$D", "$E", "$F", "$G", "$H", "$I", "$J", "$K", "$L", "$M", "$N", "$O", "$P", "$Q", "$R", "$S", "$T", "$U", "$V", "$W", "$X", "$Y", "$Z", "%A", "%B", "%C", "%D", "%E", " ", "/A", "/B", "/C", "/D", "/E", "/F", "/G", "/H", "/I", "/J", "/K", "/L", "-", ".", "/O", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/Z", "%F", "%G", "%H", "%I", "%J", "%V", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "%K", "%L", "%M", "%N", "%O", "%W", "+A", "+B", "+C", "+D", "+E", "+F", "+G", "+H", "+I", "+J", "+K", "+L", "+M", "+N", "+O", "+P", "+Q", "+R", "+S", "+T", "+U", "+V", "+W", "+X", "+Y", "+Z", "%P", "%Q", "%R", "%S", "%T" };
 
     private CheckDigit checkDigit = CheckDigit.NONE;
+
     private double moduleWidthRatio = 2;
 
     /**
@@ -58,7 +53,7 @@ public class Code3Of9Extended extends Symbol {
      * @param moduleWidthRatio the ratio of wide bar width to narrow bar width
      */
     public void setModuleWidthRatio(double moduleWidthRatio) {
-        this.moduleWidthRatio = moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -67,7 +62,7 @@ public class Code3Of9Extended extends Symbol {
      * @return the ratio of wide bar width to narrow bar width
      */
     public double getModuleWidthRatio() {
-        return moduleWidthRatio;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -76,7 +71,7 @@ public class Code3Of9Extended extends Symbol {
      * @param checkDigit the check digit scheme
      */
     public void setCheckDigit(CheckDigit checkDigit) {
-        this.checkDigit = checkDigit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -85,43 +80,19 @@ public class Code3Of9Extended extends Symbol {
      * @return the check digit scheme
      */
     public CheckDigit getCheckDigit() {
-        return checkDigit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-
-        if (!content.matches("[\u0000-\u007F]*")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        StringBuilder s = new StringBuilder(content.length() * 2);
-        for (int i = 0; i < content.length(); i++) {
-            char c = content.charAt(i);
-            s.append(E_CODE_39[c]);
-        }
-
-        Code3Of9 code39 = new Code3Of9();
-        if (checkDigit == CheckDigit.MOD43) {
-            code39.setCheckDigit(Code3Of9.CheckDigit.MOD43);
-        }
-        code39.setEmptyContentAllowed(emptyContentAllowed);
-        code39.setModuleWidthRatio(moduleWidthRatio);
-        code39.setContent(s.toString());
-
-        readable = content;
-        pattern = new String[] { code39.pattern[0] };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected double getModuleWidth(int originalWidth) {
-        if (originalWidth == 1) {
-            return 1;
-        } else {
-            return moduleWidthRatio;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import uk.org.okapibarcode.graphics.Rectangle;
@@ -38,77 +37,11 @@ public class Pharmacode2Track extends Symbol {
 
     @Override
     protected void encode() {
-
-        if (content.length() > 8) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        if (!content.matches("[0-9]+")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        int tester = Integer.parseInt(content);
-        if (tester < 4 || tester > 64570080) {
-            throw new OkapiInputException("Data out of range");
-        }
-
-        StringBuilder dest = new StringBuilder();
-        do {
-            switch (tester % 3) {
-                case 0:
-                    dest.append('F');
-                    tester = (tester - 3) / 3;
-                    break;
-                case 1:
-                    dest.append('D');
-                    tester = (tester - 1) / 3;
-                    break;
-                case 2:
-                    dest.append('A');
-                    tester = (tester - 2) / 3;
-                    break;
-            }
-        } while (tester != 0);
-
-        dest.reverse();
-        infoLine("Encoding: ", dest);
-
-        readable = "";
-        pattern = new String[] { dest.toString() };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void plotSymbol() {
-
-        int x = 0;
-        int w = moduleWidth;
-        int y = 0;
-        int h = 0;
-
-        resetPlotElements();
-
-        for (int xBlock = 0; xBlock < pattern[0].length(); xBlock++) {
-            switch (pattern[0].charAt(xBlock)) {
-                case 'A':
-                    y = 0;
-                    h = defaultHeight / 2;
-                    break;
-                case 'D':
-                    y = defaultHeight / 2;
-                    h = defaultHeight / 2;
-                    break;
-                case 'F':
-                    y = 0;
-                    h = defaultHeight;
-                    break;
-            }
-            addRectangle(new Rectangle(x, y, w, h));
-            x += 2 * w;
-        }
-
-        symbolWidth = pattern[0].length() * 2 * w;
-        symbolHeight = defaultHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

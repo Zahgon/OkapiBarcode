@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.backend.HumanReadableLocation.BOTTOM;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.NONE;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.TOP;
-
 import uk.org.okapibarcode.graphics.Rectangle;
 import uk.org.okapibarcode.graphics.TextAlignment;
 import uk.org.okapibarcode.graphics.TextBox;
@@ -46,30 +44,33 @@ import uk.org.okapibarcode.output.SvgRenderer;
  */
 public class Ean extends Symbol {
 
-    /** The different EAN barcode variants available to encode. */
+    /**
+     * The different EAN barcode variants available to encode.
+     */
     public enum Mode {
-        /** EAN-8 */
+
+        /**
+         * EAN-8
+         */
         EAN8,
-        /** EAN-13 */
+        /**
+         * EAN-13
+         */
         EAN13
     }
 
-    private static final String[] EAN13_PARITY = {
-        "AAAAAA", "AABABB", "AABBAB", "AABBBA", "ABAABB", "ABBAAB", "ABBBAA",
-        "ABABAB", "ABABBA", "ABBABA"
-    };
+    private static final String[] EAN13_PARITY = { "AAAAAA", "AABABB", "AABBAB", "AABBBA", "ABAABB", "ABBAAB", "ABBBAA", "ABABAB", "ABABBA", "ABBABA" };
 
-    private static final String[] EAN_SET_A = {
-        "3211", "2221", "2122", "1411", "1132", "1231", "1114", "1312", "1213", "3112"
-    };
+    private static final String[] EAN_SET_A = { "3211", "2221", "2122", "1411", "1132", "1231", "1114", "1312", "1213", "3112" };
 
-    private static final String[] EAN_SET_B = {
-        "1123", "1222", "2212", "1141", "2311", "1321", "4111", "2131", "3121", "2113"
-    };
+    private static final String[] EAN_SET_B = { "1123", "1222", "2212", "1141", "2311", "1321", "4111", "2131", "3121", "2113" };
 
     private Mode mode;
+
     private int guardPatternExtraHeight = 5;
+
     private boolean linkageFlag;
+
     private EanUpcAddOn addOn;
 
     /**
@@ -95,7 +96,7 @@ public class Ean extends Symbol {
      * @param mode the EAN mode (EAN-8 or EAN-13)
      */
     public void setMode(Mode mode) {
-        this.mode = mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -104,7 +105,7 @@ public class Ean extends Symbol {
      * @return the EAN mode (EAN-8 or EAN-13)
      */
     public Mode getMode() {
-        return mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -113,7 +114,7 @@ public class Ean extends Symbol {
      * @param guardPatternExtraHeight the extra height used for the guard patterns
      */
     public void setGuardPatternExtraHeight(int guardPatternExtraHeight) {
-        this.guardPatternExtraHeight = guardPatternExtraHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -122,7 +123,7 @@ public class Ean extends Symbol {
      * @return the extra height used for the guard patterns
      */
     public int getGuardPatternExtraHeight() {
-        return guardPatternExtraHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -131,7 +132,7 @@ public class Ean extends Symbol {
      * @return the EAN add-on content which was encoded, if any
      */
     public String getAddOnContent() {
-        return addOn != null ? addOn.getContent() : null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -140,23 +141,12 @@ public class Ean extends Symbol {
      * @param linkageFlag the linkage flag
      */
     protected void setLinkageFlag(boolean linkageFlag) {
-        this.linkageFlag = linkageFlag;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-
-        separateContent();
-
-        if (content.isEmpty() && !emptyContentAllowed) {
-            throw new OkapiInputException("Missing EAN data");
-        }
-
-        if (mode == Mode.EAN8) {
-            ean8();
-        } else {
-            ean13();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void separateContent() {
@@ -182,17 +172,13 @@ public class Ean extends Symbol {
     }
 
     private void ean13() {
-
         content = validateAndPad(content, 12);
-
         char check = calcDigit(content);
         infoLine("Check Digit: ", check);
-
         String hrt = content + check;
         char parityChar = hrt.charAt(0);
         String parity = EAN13_PARITY[parityChar - '0'];
         infoLine("Parity Digit: ", parityChar);
-
         StringBuilder dest = new StringBuilder("111");
         for (int i = 1; i < 13; i++) {
             if (i == 7) {
@@ -209,7 +195,6 @@ public class Ean extends Symbol {
             }
         }
         dest.append("111");
-
         readable = hrt;
         pattern = new String[] { dest.toString() };
         rowHeight = new int[] { defaultHeight };
@@ -217,14 +202,10 @@ public class Ean extends Symbol {
     }
 
     private void ean8() {
-
         content = validateAndPad(content, 7);
-
         char check = calcDigit(content);
         infoLine("Check Digit: ", check);
-
         String hrt = content + check;
-
         StringBuilder dest = new StringBuilder("111");
         for (int i = 0; i < 8; i++) {
             if (i == 4) {
@@ -233,7 +214,6 @@ public class Ean extends Symbol {
             dest.append(EAN_SET_A[hrt.charAt(i) - '0']);
         }
         dest.append("111");
-
         readable = hrt;
         pattern = new String[] { dest.toString() };
         rowHeight = new int[] { defaultHeight };
@@ -241,147 +221,21 @@ public class Ean extends Symbol {
     }
 
     protected static String validateAndPad(String s, int targetLength) {
-
-        if (!s.matches("[0-9]*")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        if (s.length() > targetLength) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        if (s.length() < targetLength) {
-            for (int i = s.length(); i < targetLength; i++) {
-                s = '0' + s;
-            }
-        }
-
-        return s;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected static char calcDigit(String s) {
-
-        int count = 0;
-        int p = 0;
-
-        for (int i = s.length() - 1; i >= 0; i--) {
-            int c = Character.getNumericValue(s.charAt(i));
-            if (p % 2 == 0) {
-                c = c * 3;
-            }
-            count += c;
-            p++;
-        }
-
-        int cdigit = 10 - (count % 10);
-        if (cdigit == 10) {
-            cdigit = 0;
-        }
-
-        return (char) (cdigit + '0');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void plotSymbol() {
-
-        resetPlotElements();
-
-        int xBlock;
-        int x, y, w, h;
-        boolean black = true;
-        int compositeOffset = (linkageFlag ? 6 : 0); // space for composite separator above
-        int hrtOffset = (humanReadableLocation == TOP ? getTheoreticalHumanReadableHeight() : 0); // space for HRT above
-
-        x = 0;
-
-        /* Add top separator for composite symbology, if necessary */
-        if (linkageFlag) {
-            if (mode == Mode.EAN13) {
-                addRectangle(new Rectangle(scale(0),  0, scale(1), 2));
-                addRectangle(new Rectangle(scale(94), 0, scale(1), 2));
-                addRectangle(new Rectangle(scale(-1), 2, scale(1), 2));
-                addRectangle(new Rectangle(scale(95), 2, scale(1), 2));
-            } else { // EAN8
-                addRectangle(new Rectangle(scale(0),  0, scale(1), 2));
-                addRectangle(new Rectangle(scale(66), 0, scale(1), 2));
-                addRectangle(new Rectangle(scale(-1), 2, scale(1), 2));
-                addRectangle(new Rectangle(scale(67), 2, scale(1), 2));
-            }
-        }
-
-        /* Draw the bars in the symbology */
-        for (xBlock = 0; xBlock < pattern[0].length(); xBlock++) {
-
-            w = pattern[0].charAt(xBlock) - '0';
-
-            if (black) {
-                y = 0;
-                h = defaultHeight;
-                /* Add extension to guide bars */
-                if (mode == Mode.EAN13) {
-                    if (x < 3 || x > 91 || (x > 45 && x < 49)) {
-                        h += guardPatternExtraHeight;
-                    }
-                    if (linkageFlag && (x == 0 || x == 94)) {
-                        h += 2;
-                        y -= 2;
-                    }
-                } else {
-                    if (x < 3 || x > 62 || (x > 30 && x < 35)) {
-                        h += guardPatternExtraHeight;
-                    }
-                    if (linkageFlag && (x == 0 || x == 66)) {
-                        h += 2;
-                        y -= 2;
-                    }
-                }
-                Rectangle rect = new Rectangle(scale(x), y + compositeOffset + hrtOffset, scale(w), h);
-                addRectangle(rect);
-                symbolWidth = Math.max(symbolWidth, (int) (rect.x + rect.width));
-                symbolHeight = Math.max(symbolHeight, (int) (rect.y + rect.height - hrtOffset));
-            }
-
-            black = !black;
-            x += w;
-        }
-
-        /* Now add the text */
-        if (humanReadableLocation == BOTTOM) {
-            symbolHeight -= guardPatternExtraHeight;
-            double baseline = symbolHeight + fontSize;
-            if (mode == Mode.EAN13) {
-                texts.add(new TextBox(scale(-9), baseline, scale(4),  readable.substring(0, 1), TextAlignment.RIGHT));
-                texts.add(new TextBox(scale(5),  baseline, scale(39), readable.substring(1, 7), humanReadableAlignment));
-                texts.add(new TextBox(scale(51), baseline, scale(39), readable.substring(7, 13), humanReadableAlignment));
-            } else { // EAN8
-                texts.add(new TextBox(scale(5),  baseline, scale(25), readable.substring(0, 4), humanReadableAlignment));
-                texts.add(new TextBox(scale(37), baseline, scale(25), readable.substring(4, 8), humanReadableAlignment));
-            }
-        } else if (humanReadableLocation == TOP) {
-            double baseline = fontSize;
-            int width = (mode == Mode.EAN13 ? 94 : 66);
-            texts.add(new TextBox(scale(0), baseline, scale(width), readable, humanReadableAlignment));
-        }
-
-        /* Now add the add-on symbol, if necessary */
-        if (addOn != null) {
-            int gap = 9;
-            int baseX = symbolWidth + scale(gap);
-            Rectangle r1 = rectangles.get(0);
-            Rectangle ar1 = addOn.rectangles.get(0);
-            int baseY = (int) (r1.y + r1.height - ar1.y - ar1.height);
-            for (TextBox t : addOn.getTexts()) {
-                texts.add(new TextBox(baseX + t.x, baseY + t.y, t.width, t.text, t.alignment));
-            }
-            for (Rectangle r : addOn.getRectangles()) {
-                addRectangle(new Rectangle(baseX + r.x, baseY + r.y, r.width, r.height));
-            }
-            symbolWidth += scale(gap) + addOn.symbolWidth;
-            pattern[0] = pattern[0] + gap + addOn.pattern[0];
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** Scales the specified width or x-dimension according to the current module width. */
+    /**
+     * Scales the specified width or x-dimension according to the current module width.
+     */
     private int scale(int w) {
         return moduleWidth * w;
     }

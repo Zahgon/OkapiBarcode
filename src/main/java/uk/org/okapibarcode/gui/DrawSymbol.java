@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-
 import javax.swing.JPanel;
-
 import uk.org.okapibarcode.graphics.Color;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
@@ -34,28 +31,24 @@ import uk.org.okapibarcode.output.Java2DRenderer;
  */
 public class DrawSymbol extends JPanel {
 
-    /** Serial version UID. */
+    /**
+     * Serial version UID.
+     */
     private static final long serialVersionUID = 586946142379393170L;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Dimension getPreferredSize() {
-        int w = OkapiUI.symbol.getWidth() * OkapiUI.factor;
-        int h = OkapiUI.symbol.getHeight() * OkapiUI.factor;
-        return new Dimension(w, h);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        Color paper = new Color(OkapiUI.paperColour.getRGB());
-        Color ink = new Color(OkapiUI.inkColour.getRGB());
-        Java2DRenderer renderer = new Java2DRenderer(g2d, OkapiUI.factor, paper, ink);
-        renderer.render(OkapiUI.symbol);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

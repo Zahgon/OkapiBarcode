@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 /**
@@ -26,44 +25,6 @@ public class Pharmazentralnummer extends Symbol {
 
     @Override
     protected void encode() {
-
-        int len = content.length();
-        if (len > 7) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        if (!content.matches("[0-9]+")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        StringBuilder localstr = new StringBuilder();
-        localstr.append('-');
-        int zeroes = 7 - len + 1;
-        for (int i = 1; i < zeroes; i++) {
-            localstr.append('0');
-        }
-        localstr.append(content);
-
-        int count = 0;
-        for (int i = 1; i < 8; i++) {
-            count += i * Character.getNumericValue(localstr.charAt(i));
-        }
-
-        int check_digit = count % 11;
-        if (check_digit == 10) {
-            throw new OkapiInputException("Not a valid PZN identifier, check digit is 10");
-        }
-
-        infoLine("Check Digit: ", check_digit);
-        localstr.append((char) (check_digit + '0'));
-
-        Code3Of9 code39 = new Code3Of9();
-        code39.setContent(localstr.toString());
-
-        readable = "PZN" + localstr;
-        pattern = new String[1];
-        pattern[0] = code39.pattern[0];
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

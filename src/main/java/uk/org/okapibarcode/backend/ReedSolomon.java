@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import java.util.Map;
@@ -25,27 +24,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ReedSolomon {
 
-    private static final Map< Key, ReedSolomon > INSTANCES = new ConcurrentHashMap<>();
+    private static final Map<Key, ReedSolomon> INSTANCES = new ConcurrentHashMap<>();
 
-    private final int rlen;       // number of error correction symbols
-    private final short logmod;   // log modulo value
-    private final short[] logt;   // log table
-    private final short[] alog;   // anti-log (exponential) table
-    private final short[] rspoly; // generator polynomial
+    // number of error correction symbols
+    private final int rlen;
+
+    // log modulo value
+    private final short logmod;
+
+    // log table
+    private final short[] logt;
+
+    // anti-log (exponential) table
+    private final short[] alog;
+
+    // generator polynomial
+    private final short[] rspoly;
 
     public static ReedSolomon get(int poly, int nsym, int index, boolean cache) {
-        if (cache) {
-            Key key = new Key(poly, nsym, index);
-            return INSTANCES.computeIfAbsent(key, k -> new ReedSolomon(k.poly, k.nsym, k.index));
-        } else {
-            return new ReedSolomon(poly, nsym, index);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private ReedSolomon(int poly, int nsym, int index) {
-
         // INIT GF
-
         // Find the top bit, and hence the symbol size
         // Ensure size is small enough to fit in short[]
         int leading = Integer.numberOfLeadingZeros(poly);
@@ -54,7 +55,6 @@ public final class ReedSolomon {
         if (m > 12) {
             throw new OkapiInternalException("Expected 12 bits or fewer, but got " + m);
         }
-
         // Calculate the log / alog tables
         logmod = (short) (b - 1);
         logt = new short[logmod + 1];
@@ -67,9 +67,7 @@ public final class ReedSolomon {
                 p ^= poly;
             }
         }
-
         // INIT CODE
-
         rlen = nsym;
         rspoly = new short[nsym + 1];
         rspoly[0] = 1;
@@ -87,45 +85,31 @@ public final class ReedSolomon {
     }
 
     public int[] encode(int len, int[] data) {
-        int[] res = new int[rlen];
-        for (int i = 0; i < len; i++) {
-            int m = res[rlen - 1] ^ data[i];
-            for (int k = rlen - 1; k > 0; k--) {
-                if (m != 0 && rspoly[k] != 0) {
-                    res[k] = res[k - 1] ^ alog[(logt[m] + logt[rspoly[k]]) % logmod];
-                } else {
-                    res[k] = res[k - 1];
-                }
-            }
-            if (m != 0 && rspoly[0] != 0) {
-                res[0] = alog[(logt[m] + logt[rspoly[0]]) % logmod];
-            } else {
-                res[0] = 0;
-            }
-        }
-        return res;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private static final class Key {
+
         private final int poly;
+
         private final int nsym;
+
         private final int index;
+
         public Key(int poly, int nsym, int index) {
             this.poly = poly;
             this.nsym = nsym;
             this.index = index;
         }
+
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Key)) {
-                return false;
-            }
-            Key other = (Key) obj;
-            return poly == other.poly && nsym == other.nsym && index == other.index;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
+
         @Override
         public int hashCode() {
-            return Objects.hash(poly, nsym, index);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 }

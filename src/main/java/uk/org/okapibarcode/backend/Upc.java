@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.backend.Ean.calcDigit;
@@ -21,9 +20,7 @@ import static uk.org.okapibarcode.backend.Ean.validateAndPad;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.BOTTOM;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.NONE;
 import static uk.org.okapibarcode.backend.HumanReadableLocation.TOP;
-
 import java.util.Arrays;
-
 import uk.org.okapibarcode.graphics.Rectangle;
 import uk.org.okapibarcode.graphics.TextAlignment;
 import uk.org.okapibarcode.graphics.TextBox;
@@ -52,38 +49,39 @@ import uk.org.okapibarcode.output.SvgRenderer;
  */
 public class Upc extends Symbol {
 
-    /** The different UPC barcode variants available to encode. */
+    /**
+     * The different UPC barcode variants available to encode.
+     */
     public enum Mode {
-        /** UPC-A */
+
+        /**
+         * UPC-A
+         */
         UPCA,
-        /** UPC-E */
+        /**
+         * UPC-E
+         */
         UPCE
     }
 
-    private static final String[] SET_AC = {
-        "3211", "2221", "2122", "1411", "1132", "1231", "1114", "1312", "1213", "3112"
-    };
+    private static final String[] SET_AC = { "3211", "2221", "2122", "1411", "1132", "1231", "1114", "1312", "1213", "3112" };
 
-    private static final String[] SET_B = {
-        "1123", "1222", "2212", "1141", "2311", "1321", "4111", "2131", "3121", "2113"
-    };
+    private static final String[] SET_B = { "1123", "1222", "2212", "1141", "2311", "1321", "4111", "2131", "3121", "2113" };
 
     /* Number set for UPC-E symbol (EN Table 4) */
-    private static final String[] UPC_PARITY_0 = {
-        "BBBAAA", "BBABAA", "BBAABA", "BBAAAB", "BABBAA", "BAABBA", "BAAABB",
-        "BABABA", "BABAAB", "BAABAB"
-    };
+    private static final String[] UPC_PARITY_0 = { "BBBAAA", "BBABAA", "BBAABA", "BBAAAB", "BABBAA", "BAABBA", "BAAABB", "BABABA", "BABAAB", "BAABAB" };
 
     /* Not covered by BS EN 797 */
-    private static final String[] UPC_PARITY_1 = {
-        "AAABBB", "AABABB", "AABBAB", "AABBBA", "ABAABB", "ABBAAB", "ABBBAA",
-        "ABABAB", "ABABBA", "ABBABA"
-    };
+    private static final String[] UPC_PARITY_1 = { "AAABBB", "AABABB", "AABBAB", "AABBBA", "ABAABB", "ABBAAB", "ABBBAA", "ABABAB", "ABABBA", "ABBABA" };
 
     private Mode mode;
+
     private boolean showCheckDigit = true;
+
     private int guardPatternExtraHeight = 5;
+
     private boolean linkageFlag;
+
     private EanUpcAddOn addOn;
 
     /**
@@ -109,7 +107,7 @@ public class Upc extends Symbol {
      * @param mode the UPC mode (UPC-A or UPC-E)
      */
     public void setMode(Mode mode) {
-        this.mode = mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -118,7 +116,7 @@ public class Upc extends Symbol {
      * @return the UPC mode (UPC-A or UPC-E)
      */
     public Mode getMode() {
-        return mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -127,7 +125,7 @@ public class Upc extends Symbol {
      * @param showCheckDigit whether or not to show the check digit in the human-readable text
      */
     public void setShowCheckDigit(boolean showCheckDigit) {
-        this.showCheckDigit = showCheckDigit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -136,7 +134,7 @@ public class Upc extends Symbol {
      * @return whether or not to show the check digit in the human-readable text
      */
     public boolean getShowCheckDigit() {
-        return showCheckDigit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -145,7 +143,7 @@ public class Upc extends Symbol {
      * @param guardPatternExtraHeight the extra height used for the guard patterns
      */
     public void setGuardPatternExtraHeight(int guardPatternExtraHeight) {
-        this.guardPatternExtraHeight = guardPatternExtraHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -154,7 +152,7 @@ public class Upc extends Symbol {
      * @return the extra height used for the guard patterns
      */
     public int getGuardPatternExtraHeight() {
-        return guardPatternExtraHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -163,7 +161,7 @@ public class Upc extends Symbol {
      * @return the UPC add-on content which was encoded, if any
      */
     public String getAddOnContent() {
-        return addOn != null ? addOn.getContent() : null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -172,23 +170,12 @@ public class Upc extends Symbol {
      * @param linkageFlag the linkage flag
      */
     protected void setLinkageFlag(boolean linkageFlag) {
-        this.linkageFlag = linkageFlag;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-
-        separateContent();
-
-        if (content.isEmpty() && !emptyContentAllowed) {
-            throw new OkapiInputException("Missing UPC data");
-        }
-
-        if (mode == Mode.UPCA) {
-            upca();
-        } else {
-            upce();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void separateContent() {
@@ -214,14 +201,10 @@ public class Upc extends Symbol {
     }
 
     private void upca() {
-
         content = validateAndPad(content, 11);
-
         char check = calcDigit(content);
         infoLine("Check Digit: ", check);
-
         String hrt = content + check;
-
         int length = 3 + (12 * 4) + 5 + 3;
         StringBuilder dest = new StringBuilder(length);
         dest.append("111");
@@ -232,7 +215,6 @@ public class Upc extends Symbol {
             dest.append(SET_AC[hrt.charAt(i) - '0']);
         }
         dest.append("111");
-
         readable = hrt;
         pattern = new String[] { dest.toString() };
         rowHeight = new int[] { defaultHeight };
@@ -240,33 +222,27 @@ public class Upc extends Symbol {
     }
 
     private void upce() {
-
         content = validateAndPad(content, 7);
-
         String expanded = expandToEquivalentUpcA(content, true);
         infoLine("UPC-A Equivalent: ", expanded);
-
         char check = calcDigit(expanded);
         infoLine("Check Digit: ", check);
-
         String hrt = content + check;
-
         int numberSystem = getNumberSystem(content);
         String[] parityArray = (numberSystem == 1 ? UPC_PARITY_1 : UPC_PARITY_0);
         String parity = parityArray[check - '0'];
-
         int length = 3 + (6 * 4) + 6;
         StringBuilder dest = new StringBuilder(length);
         dest.append("111");
         for (int i = 0; i < 6; i++) {
             if (parity.charAt(i) == 'A') {
                 dest.append(SET_AC[content.charAt(i + 1) - '0']);
-            } else { // B
+            } else {
+                // B
                 dest.append(SET_B[content.charAt(i + 1) - '0']);
             }
         }
         dest.append("111111");
-
         readable = hrt;
         pattern = new String[] { dest.toString() };
         rowHeight = new int[] { defaultHeight };
@@ -281,61 +257,14 @@ public class Upc extends Symbol {
      * @return the UPC-A equivalent of the specified UPC-E code
      */
     protected String expandToEquivalentUpcA(String content, boolean validate) {
-
-        char[] upce = content.toCharArray();
-        char[] upca = new char[11];
-        Arrays.fill(upca, '0');
-        upca[0] = upce[0];
-        upca[1] = upce[1];
-        upca[2] = upce[2];
-
-        char emode = upce[6];
-
-        switch (emode) {
-            case '0':
-            case '1':
-            case '2':
-                upca[3] = emode;
-                upca[8] = upce[3];
-                upca[9] = upce[4];
-                upca[10] = upce[5];
-                break;
-            case '3':
-                upca[3] = upce[3];
-                upca[9] = upce[4];
-                upca[10] = upce[5];
-                if (validate && (upce[3] == '0' || upce[3] == '1' || upce[3] == '2')) {
-                    /* Note 1 - "X3 shall not be equal to 0, 1 or 2" */
-                    throw new OkapiInputException("Invalid UPC-E data");
-                }
-                break;
-            case '4':
-                upca[3] = upce[3];
-                upca[4] = upce[4];
-                upca[10] = upce[5];
-                if (validate && upce[4] == '0') {
-                    /* Note 2 - "X4 shall not be equal to 0" */
-                    throw new OkapiInputException("Invalid UPC-E data");
-                }
-                break;
-            default:
-                upca[3] = upce[3];
-                upca[4] = upce[4];
-                upca[5] = upce[5];
-                upca[10] = emode;
-                if (validate && upce[5] == '0') {
-                    /* Note 3 - "X5 shall not be equal to 0" */
-                    throw new OkapiInputException("Invalid UPC-E data");
-                }
-                break;
-        }
-
-        return new String(upca);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** Two number systems can be used: system 0 and system 1. */
+    /**
+     * Two number systems can be used: system 0 and system 1.
+     */
     private static int getNumberSystem(String content) {
-        switch (content.charAt(0)) {
+        switch(content.charAt(0)) {
             case '0':
                 return 0;
             case '1':
@@ -347,111 +276,12 @@ public class Upc extends Symbol {
 
     @Override
     protected void plotSymbol() {
-
-        resetPlotElements();
-
-        int xBlock;
-        int x, y, w, h;
-        boolean black = true;
-        int compositeOffset = (linkageFlag ? 6 : 0); // space for composite separator above
-        int hrtOffset = (humanReadableLocation == TOP ? getTheoreticalHumanReadableHeight() : 0); // space for HRT above
-
-        x = 0;
-
-        /* Add top separator for composite symbology, if necessary */
-        if (linkageFlag) {
-            if (mode == Mode.UPCA) {
-                addRectangle(new Rectangle(scale(0),  0, scale(1), 2));
-                addRectangle(new Rectangle(scale(94), 0, scale(1), 2));
-                addRectangle(new Rectangle(scale(-1), 2, scale(1), 2));
-                addRectangle(new Rectangle(scale(95), 2, scale(1), 2));
-            } else { // UPCE
-                addRectangle(new Rectangle(scale(0),  0, scale(1), 2));
-                addRectangle(new Rectangle(scale(50), 0, scale(1), 2));
-                addRectangle(new Rectangle(scale(-1), 2, scale(1), 2));
-                addRectangle(new Rectangle(scale(51), 2, scale(1), 2));
-            }
-        }
-
-        /* Draw the bars in the symbology */
-        for (xBlock = 0; xBlock < pattern[0].length(); xBlock++) {
-
-            w = pattern[0].charAt(xBlock) - '0';
-
-            if (black) {
-                y = 0;
-                h = defaultHeight;
-                /* Add extension to guide bars */
-                if (mode == Mode.UPCA) {
-                    if (x < 10 || x > 84 || (x > 45 && x < 49)) {
-                        h += guardPatternExtraHeight;
-                    }
-                    if (linkageFlag && (x == 0 || x == 94)) {
-                        h += 2;
-                        y -= 2;
-                    }
-                } else {
-                    if (x < 4 || x > 45) {
-                        h += guardPatternExtraHeight;
-                    }
-                    if (linkageFlag && (x == 0 || x == 50)) {
-                        h += 2;
-                        y -= 2;
-                    }
-                }
-                Rectangle rect = new Rectangle(scale(x), y + compositeOffset + hrtOffset, scale(w), h);
-                addRectangle(rect);
-                symbolWidth = Math.max(symbolWidth, (int) (rect.x + rect.width));
-                symbolHeight = Math.max(symbolHeight, (int) (rect.y + rect.height - hrtOffset));
-            }
-
-            black = !black;
-            x += w;
-        }
-
-        /* Now add the text */
-        if (humanReadableLocation == BOTTOM) {
-            symbolHeight -= guardPatternExtraHeight;
-            double baseline = symbolHeight + fontSize;
-            if (mode == Mode.UPCA) {
-                texts.add(new TextBox(scale(-9), baseline, scale(4), readable.substring(0, 1), TextAlignment.RIGHT));
-                texts.add(new TextBox(scale(12), baseline, scale(32), readable.substring(1, 6), humanReadableAlignment));
-                texts.add(new TextBox(scale(51), baseline, scale(32), readable.substring(6, 11), humanReadableAlignment));
-                if (showCheckDigit) {
-                    texts.add(new TextBox(scale(97), baseline, scale(4), readable.substring(11, 12), TextAlignment.LEFT));
-                }
-            } else { // UPCE
-                texts.add(new TextBox(scale(-9), baseline, scale(4), readable.substring(0, 1), TextAlignment.RIGHT));
-                texts.add(new TextBox(scale(5), baseline, scale(39), readable.substring(1, 7), humanReadableAlignment));
-                if (showCheckDigit) {
-                    texts.add(new TextBox(scale(53), baseline, scale(4), readable.substring(7, 8), TextAlignment.LEFT));
-                }
-            }
-        } else if (humanReadableLocation == TOP) {
-            double baseline = fontSize;
-            int width = (mode == Mode.UPCA ? 94 : 50);
-            texts.add(new TextBox(scale(0), baseline, scale(width), readable, humanReadableAlignment));
-        }
-
-        /* Now add the add-on symbol, if necessary */
-        if (addOn != null) {
-            int gap = 9;
-            int baseX = symbolWidth + scale(gap);
-            Rectangle r1 = rectangles.get(0);
-            Rectangle ar1 = addOn.rectangles.get(0);
-            int baseY = (int) (r1.y + r1.height - ar1.y - ar1.height);
-            for (TextBox t : addOn.getTexts()) {
-                texts.add(new TextBox(baseX + t.x, baseY + t.y, t.width, t.text, t.alignment));
-            }
-            for (Rectangle r : addOn.getRectangles()) {
-                addRectangle(new Rectangle(baseX + r.x, baseY + r.y, r.width, r.height));
-            }
-            symbolWidth += scale(gap) + addOn.symbolWidth;
-            pattern[0] = pattern[0] + gap + addOn.pattern[0];
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** Scales the specified width or x-dimension according to the current module width. */
+    /**
+     * Scales the specified width or x-dimension according to the current module width.
+     */
     private int scale(int w) {
         return moduleWidth * w;
     }

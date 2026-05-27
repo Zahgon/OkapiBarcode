@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.graphics;
 
 import java.util.Objects;
@@ -26,13 +25,19 @@ import java.util.Objects;
 public final class Color {
 
     public static final Color WHITE = new Color(255, 255, 255);
+
     public static final Color BLACK = new Color(0, 0, 0);
-    public static final Color RED   = new Color(255, 0, 0);
+
+    public static final Color RED = new Color(255, 0, 0);
+
     public static final Color GREEN = new Color(0, 255, 0);
-    public static final Color BLUE  = new Color(0, 0, 255);
+
+    public static final Color BLUE = new Color(0, 0, 255);
 
     public final int red;
+
     public final int green;
+
     public final int blue;
 
     public Color(int red, int green, int blue) {
@@ -62,25 +67,27 @@ public final class Color {
         this.blue = Integer.parseInt(rrggbb.substring(4, 6), 16);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Color)) {
-            return false;
-        }
-        Color c = (Color) other;
-        return red == c.red && green == c.green && blue == c.blue;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(red, green, blue);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
-        return "Color[red=" + red + ", green=" + green + ", blue=" + blue + "]";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

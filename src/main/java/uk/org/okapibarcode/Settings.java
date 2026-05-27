@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode;
 
 import com.beust.jcommander.Parameter;
-
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.graphics.Color;
 
 /**
- *
  * @author <a href="mailto:rstuart114@gmail.com">Robin Stuart</a>
  */
 public class Settings {
@@ -30,37 +27,35 @@ public class Settings {
     @Parameter(names = "-cli", description = "Supress GUI loading", required = false)
     private boolean supressGui = false;
 
-    @Parameter(names = {"-t", "--types"}, description = "Display table of barcode types", required = false)
+    @Parameter(names = { "-t", "--types" }, description = "Display table of barcode types", required = false)
     private boolean displayTypes = false;
 
-    @Parameter(names = {"-i", "--input"}, description = "Read data from file", required = false)
+    @Parameter(names = { "-i", "--input" }, description = "Read data from file", required = false)
     private String inputFile = "";
 
-    @Parameter(names = {"-o", "--output"}, description = "Write image to file", required = false)
+    @Parameter(names = { "-o", "--output" }, description = "Write image to file", required = false)
     private String outputFile = "out.png";
 
-    @Parameter(names = {"-d", "--data"}, description = "Barcode content", required = false)
+    @Parameter(names = { "-d", "--data" }, description = "Barcode content", required = false)
     private String inputData = "";
 
-    @Parameter(names = {"-b", "--barcode"}, description = "Select barcode type", required = false)
+    @Parameter(names = { "-b", "--barcode" }, description = "Select barcode type", required = false)
     private int symbolType = 20;
 
     @Parameter(names = "--height", description = "Height of the symbol in multiples of x-dimension", required = false)
     private int symbolHeight = 0;
 
-//    @Parameter(names = {"-w", "--whitesp"}, description = "Width of whitespace in multiples of x-dimension", required = false)
-//    private int symbolWhiteSpace = 0;
-//
-//    @Parameter(names = "--border", description = "Width of border in multiples of x-dimension", required = false)
-//    private int symbolBorder = 0;
-
-//    @Parameter(names = "--box", description = "Add a box", required = false)
-//    private boolean addBox = false;
-//
-//    @Parameter(names = "--bind", description = "Add boundary bars", required = false)
-//    private boolean addBinding = false;
-
-    @Parameter(names = {"-r", "--reverse"}, description = "Reverse colours (white on black)", required = false)
+    //    @Parameter(names = {"-w", "--whitesp"}, description = "Width of whitespace in multiples of x-dimension", required = false)
+    //    private int symbolWhiteSpace = 0;
+    //
+    //    @Parameter(names = "--border", description = "Width of border in multiples of x-dimension", required = false)
+    //    private int symbolBorder = 0;
+    //    @Parameter(names = "--box", description = "Add a box", required = false)
+    //    private boolean addBox = false;
+    //
+    //    @Parameter(names = "--bind", description = "Add boundary bars", required = false)
+    //    private boolean addBinding = false;
+    @Parameter(names = { "-r", "--reverse" }, description = "Reverse colours (white on black)", required = false)
     private boolean reverseColour = false;
 
     @Parameter(names = "--fg", description = "Specify a foreground (ink) colour", required = false)
@@ -73,10 +68,8 @@ public class Settings {
     private int symbolScale = 0;
 
     // --directpng, --directeps, --directsvg, --dump
-
-//    @Parameter(names = "--rotate", description = "Rotate symbol", required = false)
-//    private int rotationAngle = 0;
-
+    //    @Parameter(names = "--rotate", description = "Rotate symbol", required = false)
+    //    private int rotationAngle = 0;
     @Parameter(names = "--cols", description = "Number of columns in PDF417", required = false)
     private int symbolColumns = 0;
 
@@ -111,7 +104,6 @@ public class Settings {
     private boolean addReaderInit = false;
 
     // --smalltext
-
     @Parameter(names = "--batch", description = "Treat each line of input as a separate data set", required = false)
     private boolean batchMode = false;
 
@@ -119,219 +111,184 @@ public class Settings {
      * @return the supressGui
      */
     public boolean isGuiSupressed() {
-        return supressGui;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the displayTypes
      */
     public boolean isDisplayTypes() {
-        return displayTypes;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the inputFile
      */
     public String getInputFile() {
-        return inputFile;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the outputFile
      */
     public String getOutputFile() {
-        return outputFile;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the inputData
      */
     public String getInputData() {
-        return inputData;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the symbolType
      */
     public int getSymbolType() {
-        return symbolType;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the symbolHeight
      */
     public int getSymbolHeight() {
-        return symbolHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-//    /**
-//     * @return the symbolWhiteSpace
-//     */
-//    public int getSymbolWhiteSpace() {
-//        return symbolWhiteSpace;
-//    }
-
-//    /**
-//     * @return the symbolBorder
-//     */
-//    public int getSymbolBorder() {
-//        return symbolBorder;
-//    }
-
-//    /**
-//     * @return the addBox
-//     */
-//    public boolean isAddBox() {
-//        return addBox;
-//    }
-//
-//    /**
-//     * @return the addBinding
-//     */
-//    public boolean isAddBinding() {
-//        return addBinding;
-//    }
-
+    //    /**
+    //     * @return the symbolWhiteSpace
+    //     */
+    //    public int getSymbolWhiteSpace() {
+    //        return symbolWhiteSpace;
+    //    }
+    //    /**
+    //     * @return the symbolBorder
+    //     */
+    //    public int getSymbolBorder() {
+    //        return symbolBorder;
+    //    }
+    //    /**
+    //     * @return the addBox
+    //     */
+    //    public boolean isAddBox() {
+    //        return addBox;
+    //    }
+    //
+    //    /**
+    //     * @return the addBinding
+    //     */
+    //    public boolean isAddBinding() {
+    //        return addBinding;
+    //    }
     /**
      * @return the reverseColour
      */
     public boolean isReverseColour() {
-        return reverseColour;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the foregroundColour
      */
     public Color getForegroundColour() {
-        Color inkColour = Color.BLACK;
-        String fgColour;
-
-        fgColour = foregroundColour.toUpperCase();
-
-        if (fgColour.matches("[0-9A-F]{6}")) {
-            int rgb = Integer.parseInt(fgColour, 16);
-            inkColour = new Color(rgb);
-        }
-
-        return inkColour;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the backgroundColour
      */
     public Color getBackgroundColour() {
-        Color paperColour = Color.WHITE;
-        String bgColour;
-
-        bgColour = backgroundColour.toUpperCase();
-
-        if (bgColour.matches("[0-9A-F]{6}")) {
-            int rgb = Integer.parseInt(bgColour, 16);
-            paperColour = new Color(rgb);
-        }
-
-        return paperColour;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the symbolScale
      */
     public int getSymbolScale() {
-        return symbolScale;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-//    /**
-//     * @return the rotationAngle
-//     */
-//    public int getRotationAngle() {
-//        return rotationAngle;
-//    }
-
+    //    /**
+    //     * @return the rotationAngle
+    //     */
+    //    public int getRotationAngle() {
+    //        return rotationAngle;
+    //    }
     /**
      * @return the symbolColumns
      */
     public int getSymbolColumns() {
-        return symbolColumns;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the symbolVersion
      */
     public int getSymbolVersion() {
-        return symbolVersion;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the symbolECC
      */
     public int getSymbolECC() {
-        return symbolECC;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the primaryData
      */
     public String getPrimaryData() {
-        return primaryData;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the encodeMode
      */
     public int getEncodeMode() {
-        return encodeMode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the dataGs1Mode
      */
     public boolean isDataGs1Mode() {
-        return dataGs1Mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the dataBinaryMode
      */
     public boolean isDataBinaryMode() {
-        return dataBinaryMode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the supressHrt
      */
     public HumanReadableLocation getHrtPosition() {
-        HumanReadableLocation temp = HumanReadableLocation.BOTTOM;
-
-        if(superHrt) {
-            temp = HumanReadableLocation.TOP;
-        }
-
-        if(supressHrt) {
-            temp = HumanReadableLocation.NONE;
-        }
-
-        return temp;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the makeSquare
      */
     public boolean isMakeSquare() {
-        return makeSquare;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the addReaderInit
      */
     public boolean isReaderInit() {
-        return addReaderInit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the batchMode
      */
     public boolean isBatchMode() {
-        return batchMode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

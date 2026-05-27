@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.graphics;
 
 import java.util.Objects;
@@ -26,7 +25,9 @@ import java.util.Objects;
 public final class Circle {
 
     public final double centreX;
+
     public final double centreY;
+
     public final double radius;
 
     public Circle(double centreX, double centreY, double radius) {
@@ -35,25 +36,27 @@ public final class Circle {
         this.radius = radius;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Circle)) {
-            return false;
-        }
-        Circle c = (Circle) other;
-        return centreX == c.centreX && centreY == c.centreY && radius == c.radius;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(centreX, centreY, radius);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
-        return "Circle[centreX=" + centreX + ", centreY=" + centreY + ", radius=" + radius + "]";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

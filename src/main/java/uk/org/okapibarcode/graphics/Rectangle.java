@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.graphics;
 
 import java.util.Objects;
@@ -25,16 +24,24 @@ import java.util.Objects;
  */
 public final class Rectangle {
 
-    /** The X position of the rectangle's left boundary. */
+    /**
+     * The X position of the rectangle's left boundary.
+     */
     public final double x;
 
-    /** The Y position of the rectangle's top boundary. */
+    /**
+     * The Y position of the rectangle's top boundary.
+     */
     public final double y;
 
-    /** The width of the rectangle. */
+    /**
+     * The width of the rectangle.
+     */
     public final double width;
 
-    /** The height of the rectangle. */
+    /**
+     * The height of the rectangle.
+     */
     public double height;
 
     /**
@@ -52,25 +59,27 @@ public final class Rectangle {
         this.height = height;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Rectangle)) {
-            return false;
-        }
-        Rectangle r = (Rectangle) other;
-        return x == r.x && y == r.y && width == r.width && height == r.height;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, width, height);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
-        return "Rectangle[x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "]";
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

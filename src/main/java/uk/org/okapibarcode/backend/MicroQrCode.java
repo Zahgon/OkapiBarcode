@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2014 Robin Stuart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.util.Arrays.positionOf;
-
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -31,49 +29,52 @@ import java.io.UnsupportedEncodingException;
  */
 public class MicroQrCode extends Symbol {
 
-    /** The different Micro QR Code error correction levels. */
+    /**
+     * The different Micro QR Code error correction levels.
+     */
     public enum EccMode {
-        /** Low error correction level. Appropriate for symbols that are high-quality or require smallest possible size. */
+
+        /**
+         * Low error correction level. Appropriate for symbols that are high-quality or require smallest possible size.
+         */
         L,
-        /** Medium or "standard" error correction level. Offers a good compromise between symbol size and reliability. */
+        /**
+         * Medium or "standard" error correction level. Offers a good compromise between symbol size and reliability.
+         */
         M,
-        /** High error correction level. Suitable for critically-important symbols or applications with low print quality. */
+        /**
+         * High error correction level. Suitable for critically-important symbols or applications with low print quality.
+         */
         Q
     }
 
     private enum qrMode {
+
         NULL, KANJI, BINARY, ALPHANUM, NUMERIC
     }
 
     /* Table 5 - Encoding/Decoding table for Alphanumeric mode */
-    private static final char[] RHODIUM = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-        'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '$', '%', '*', '+', '-',
-        '.', '/', ':'
-    };
+    private static final char[] RHODIUM = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '$', '%', '*', '+', '-', '.', '/', ':' };
 
-    private static final int[] QR_ANNEX_C1 = {
-        /* Micro QR Code format information */
-        0x4445, 0x4172, 0x4e2b, 0x4b1c, 0x55ae, 0x5099, 0x5fc0, 0x5af7, 0x6793,
-        0x62a4, 0x6dfd, 0x68ca, 0x7678, 0x734f, 0x7c16, 0x7921, 0x06de, 0x03e9,
-        0x0cb0, 0x0987, 0x1735, 0x1202, 0x1d5b, 0x186c, 0x2508, 0x203f, 0x2f66,
-        0x2a51, 0x34e3, 0x31d4, 0x3e8d, 0x3bba
-    };
+    private static final int[] QR_ANNEX_C1 = { /* Micro QR Code format information */
+    0x4445, 0x4172, 0x4e2b, 0x4b1c, 0x55ae, 0x5099, 0x5fc0, 0x5af7, 0x6793, 0x62a4, 0x6dfd, 0x68ca, 0x7678, 0x734f, 0x7c16, 0x7921, 0x06de, 0x03e9, 0x0cb0, 0x0987, 0x1735, 0x1202, 0x1d5b, 0x186c, 0x2508, 0x203f, 0x2f66, 0x2a51, 0x34e3, 0x31d4, 0x3e8d, 0x3bba };
 
     private static final int[] MICRO_QR_SIZES = { 11, 13, 15, 17 };
 
     // user-specified values and settings
-
     private int preferredVersion;
+
     private EccMode preferredEccLevel = EccMode.L;
 
     // internal state calculated when setContent() is called
-
     private qrMode[] inputMode;
+
     private StringBuilder binary;
+
     private int[] binaryCount = new int[4];
+
     private int[] grid;
+
     private int[] eval;
 
     /**
@@ -101,10 +102,7 @@ public class MicroQrCode extends Symbol {
      * @param version symbol size
      */
     public void setPreferredVersion(int version) {
-        if (version < 0 || version > 4) { // TODO: min 1
-            throw new IllegalArgumentException("Invalid version: " + version);
-        }
-        preferredVersion = version;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -114,7 +112,7 @@ public class MicroQrCode extends Symbol {
      * @see #setPreferredVersion(int)
      */
     public int getPreferredVersion() {
-        return preferredVersion;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -134,7 +132,7 @@ public class MicroQrCode extends Symbol {
      * @param eccMode error correction level
      */
     public void setEccMode(EccMode eccMode) {
-        preferredEccLevel = eccMode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -144,326 +142,23 @@ public class MicroQrCode extends Symbol {
      * @see #setEccMode(EccMode)
      */
     public EccMode getEccMode() {
-        return preferredEccLevel;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-        int i, j, size;
-        boolean[] version_valid = new boolean[4];
-        int n_count, a_count;
-        EccMode ecc_level;
-        int version, autoversion;
-        int bitmask;
-        int format, format_full;
-        StringBuilder bin = new StringBuilder();
-        boolean byteModeUsed;
-        boolean alphanumModeUsed;
-        boolean kanjiModeUsed;
-
-        if (content.length() > 35) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        inputCharCheck();
-
-        for (i = 0; i < 4; i++) {
-            version_valid[i] = true;
-        }
-
-        inputMode = new qrMode[40];
-        selectEncodingMode();
-
-        n_count = 0;
-        a_count = 0;
-        for (i = 0; i < content.length(); i++) {
-            if ((content.charAt(i) >= '0') && (content.charAt(i) <= '9')) {
-                n_count++;
-            }
-            if (isAlphanumeric(content.charAt(i))) {
-                a_count++;
-            }
-        }
-
-        if (a_count == content.length()) {
-            /* All data can be encoded in Alphanumeric mode */
-            for (i = 0; i < content.length(); i++) {
-                inputMode[i] = qrMode.ALPHANUM;
-            }
-        }
-
-        if (n_count == content.length()) {
-            /* All data can be encoded in Numeric mode */
-            for (i = 0; i < content.length(); i++) {
-                inputMode[i] = qrMode.NUMERIC;
-            }
-        }
-
-        byteModeUsed = false;
-        alphanumModeUsed = false;
-        kanjiModeUsed = false;
-
-        for (i = 0; i < content.length(); i++) {
-            if (inputMode[i] == qrMode.BINARY) {
-                byteModeUsed = true;
-            }
-
-            if (inputMode[i] == qrMode.ALPHANUM) {
-                alphanumModeUsed = true;
-            }
-
-            if (inputMode[i] == qrMode.KANJI) {
-                kanjiModeUsed = true;
-            }
-        }
-
-        getBinaryLength();
-
-        /* Eliminate possible versions depending on type of content */
-        if (byteModeUsed) {
-            version_valid[0] = false;
-            version_valid[1] = false;
-        }
-
-        if (alphanumModeUsed) {
-            version_valid[0] = false;
-        }
-
-        if (kanjiModeUsed) {
-            version_valid[0] = false;
-            version_valid[1] = false;
-        }
-
-        /* Eliminate possible versions depending on length of binary data */
-        if (binaryCount[0] > 20) {
-            version_valid[0] = false;
-        }
-        if (binaryCount[1] > 40) {
-            version_valid[1] = false;
-        }
-        if (binaryCount[2] > 84) {
-            version_valid[2] = false;
-        }
-        if (binaryCount[3] > 128) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        /* Eliminate possible versions depending on error correction level specified */
-        ecc_level = preferredEccLevel;
-
-        if (ecc_level == EccMode.Q) {
-            version_valid[0] = false;
-            version_valid[1] = false;
-            version_valid[2] = false;
-            if (binaryCount[3] > 80) {
-                throw OkapiInputException.inputTooLong();
-            }
-        }
-
-        if (ecc_level == EccMode.M) {
-            version_valid[0] = false;
-            if (binaryCount[1] > 32) {
-                version_valid[1] = false;
-            }
-            if (binaryCount[2] > 68) {
-                version_valid[2] = false;
-            }
-            if (binaryCount[3] > 112) {
-                throw OkapiInputException.inputTooLong();
-            }
-        }
-
-        autoversion = 3;
-        if (version_valid[2]) {
-            autoversion = 2;
-        }
-        if (version_valid[1]) {
-            autoversion = 1;
-        }
-        if (version_valid[0]) {
-            autoversion = 0;
-        }
-
-        version = autoversion;
-        /* Get version from user */
-        if(preferredVersion >= 1 && preferredVersion <= 4) {
-            if(preferredVersion - 1 >= autoversion) {
-                version = preferredVersion - 1;
-            }
-        }
-
-        /* If there is enough unused space then increase the error correction level */
-        if (version == 3) {
-            if (binaryCount[3] <= 112) {
-                ecc_level = EccMode.M;
-            }
-            if (binaryCount[3] <= 80) {
-                ecc_level = EccMode.Q;
-            }
-        }
-
-        if (version == 2 && binaryCount[2] <= 68) {
-            ecc_level = EccMode.M;
-        }
-
-        if (version == 1 && binaryCount[1] <= 32) {
-            ecc_level = EccMode.M;
-        }
-
-        binary = new StringBuilder();
-        generateBinary(version);
-        if (binary.length() > 128) {
-            throw OkapiInputException.inputTooLong();
-        }
-
-        switch (version) {
-        case 0:
-            generateM1Symbol();
-            infoLine("Version: M1");
-            break;
-        case 1:
-            generateM2Symbol(ecc_level);
-            infoLine("Version: M2");
-            infoLine("ECC Level: ", levelToLetter(ecc_level));
-            break;
-        case 2:
-            generateM3Symbol(ecc_level);
-            infoLine("Version: M3");
-            infoLine("ECC Level: ", levelToLetter(ecc_level));
-            break;
-        case 3:
-            generateM4Symbol(ecc_level);
-            infoLine("Version: M4");
-            infoLine("ECC Level: ", levelToLetter(ecc_level));
-            break;
-        }
-
-        size = MICRO_QR_SIZES[version];
-
-        grid = new int[size * size];
-
-        for (i = 0; i < size; i++) {
-            for (j = 0; j < size; j++) {
-                grid[(i * size) + j] = 0;
-            }
-        }
-
-        setupBitGrid(size);
-        populateBitGrid(size);
-        bitmask = applyBitmask(size);
-
-        infoLine("Mask Pattern: ", Integer.toBinaryString(bitmask));
-
-        /* Add format data */
-        format = 0;
-        switch (version) {
-        case 1:
-            switch (ecc_level) {
-            case L:
-                format = 1;
-                break;
-            case M:
-                format = 2;
-                break;
-            }
-            break;
-        case 2:
-            switch (ecc_level) {
-            case L:
-                format = 3;
-                break;
-            case M:
-                format = 4;
-                break;
-            }
-            break;
-        case 3:
-            switch (ecc_level) {
-            case L:
-                format = 5;
-                break;
-            case M:
-                format = 6;
-                break;
-            case Q:
-                format = 7;
-                break;
-            }
-            break;
-        }
-
-        format_full = QR_ANNEX_C1[(format << 2) + bitmask];
-
-        if ((format_full & 0x4000) != 0) {
-            grid[(8 * size) + 1] += 0x01;
-        }
-        if ((format_full & 0x2000) != 0) {
-            grid[(8 * size) + 2] += 0x01;
-        }
-        if ((format_full & 0x1000) != 0) {
-            grid[(8 * size) + 3] += 0x01;
-        }
-        if ((format_full & 0x800) != 0) {
-            grid[(8 * size) + 4] += 0x01;
-        }
-        if ((format_full & 0x400) != 0) {
-            grid[(8 * size) + 5] += 0x01;
-        }
-        if ((format_full & 0x200) != 0) {
-            grid[(8 * size) + 6] += 0x01;
-        }
-        if ((format_full & 0x100) != 0) {
-            grid[(8 * size) + 7] += 0x01;
-        }
-        if ((format_full & 0x80) != 0) {
-            grid[(8 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x40) != 0) {
-            grid[(7 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x20) != 0) {
-            grid[(6 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x10) != 0) {
-            grid[(5 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x08) != 0) {
-            grid[(4 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x04) != 0) {
-            grid[(3 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x02) != 0) {
-            grid[(2 * size) + 8] += 0x01;
-        }
-        if ((format_full & 0x01) != 0) {
-            grid[(1 * size) + 8] += 0x01;
-        }
-
-        readable = "";
-        pattern = new String[size];
-        rowCount = size;
-        rowHeight = new int[size];
-
-        StringBuilder pat = new StringBuilder(size);
-        for (i = 0; i < size; i++) {
-            pattern[i] = bin2pat(grid, i * size, size, pat);
-            rowHeight[i] = moduleWidth;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private void inputCharCheck() {
         int qmarkBefore, qmarkAfter;
         int i;
         byte[] temp;
-
         /* Check that input includes valid characters */
-
         if (content.matches("[\u0000-\u00FF]*")) {
             /* All characters in ISO 8859-1 */
             return;
         }
-
         /* Otherwise check for Shift-JIS characters */
         qmarkBefore = 0;
         for (i = 0; i < content.length(); i++) {
@@ -471,20 +166,17 @@ public class MicroQrCode extends Symbol {
                 qmarkBefore++;
             }
         }
-
         try {
             temp = content.getBytes("SJIS");
         } catch (UnsupportedEncodingException e) {
             throw new OkapiInternalException("Character encoding error");
         }
-
         qmarkAfter = 0;
         for (i = 0; i < temp.length; i++) {
-            if (temp[i] == '?')  {
+            if (temp[i] == '?') {
                 qmarkAfter++;
             }
         }
-
         /* If these values are the same, conversion was successful */
         if (qmarkBefore != qmarkAfter) {
             throw OkapiInputException.invalidCharactersInInput();
@@ -492,7 +184,7 @@ public class MicroQrCode extends Symbol {
     }
 
     private char levelToLetter(EccMode ecc_mode) {
-        switch (ecc_mode) {
+        switch(ecc_mode) {
             case L:
                 return 'L';
             case M:
@@ -508,7 +200,6 @@ public class MicroQrCode extends Symbol {
         int i, j;
         int mlen;
         int length = content.length();
-
         for (i = 0; i < length; i++) {
             if (content.charAt(i) > 0xff) {
                 inputMode[i] = qrMode.KANJI;
@@ -522,15 +213,12 @@ public class MicroQrCode extends Symbol {
                 }
             }
         }
-
         /* If less than 6 numeric digits together then don't use numeric mode */
         for (i = 0; i < length; i++) {
             if (inputMode[i] == qrMode.NUMERIC) {
-                if (((i != 0) && (inputMode[i - 1] != qrMode.NUMERIC))
-                        || (i == 0)) {
+                if (((i != 0) && (inputMode[i - 1] != qrMode.NUMERIC)) || (i == 0)) {
                     mlen = 0;
-                    while (((mlen + i) < length)
-                            && (inputMode[mlen + i] == qrMode.NUMERIC)) {
+                    while (((mlen + i) < length) && (inputMode[mlen + i] == qrMode.NUMERIC)) {
                         mlen++;
                     }
                     if (mlen < 6) {
@@ -541,15 +229,12 @@ public class MicroQrCode extends Symbol {
                 }
             }
         }
-
         /* If less than 4 alphanumeric characters together then don't use alphanumeric mode */
         for (i = 0; i < length; i++) {
             if (inputMode[i] == qrMode.ALPHANUM) {
-                if (((i != 0) && (inputMode[i - 1] != qrMode.ALPHANUM))
-                        || (i == 0)) {
+                if (((i != 0) && (inputMode[i - 1] != qrMode.ALPHANUM)) || (i == 0)) {
                     mlen = 0;
-                    while (((mlen + i) < length)
-                            && (inputMode[mlen + i] == qrMode.ALPHANUM)) {
+                    while (((mlen + i) < length) && (inputMode[mlen + i] == qrMode.ALPHANUM)) {
                         mlen++;
                     }
                     if (mlen < 6) {
@@ -565,27 +250,25 @@ public class MicroQrCode extends Symbol {
     private boolean isAlphanumeric(char cglyph) {
         /* Returns true if input glyph is in the Alphanumeric set */
         boolean retval = false;
-
         if ((cglyph >= '0') && (cglyph <= '9')) {
             retval = true;
         }
         if ((cglyph >= 'A') && (cglyph <= 'Z')) {
             retval = true;
         }
-        switch (cglyph) {
-        case ' ':
-        case '$':
-        case '%':
-        case '*':
-        case '+':
-        case '-':
-        case '.':
-        case '/':
-        case ':':
-            retval = true;
-            break;
+        switch(cglyph) {
+            case ' ':
+            case '$':
+            case '%':
+            case '*':
+            case '+':
+            case '-':
+            case '.':
+            case '/':
+            case ':':
+                retval = true;
+                break;
         }
-
         return retval;
     }
 
@@ -605,26 +288,20 @@ public class MicroQrCode extends Symbol {
         int i;
         qrMode currentMode = qrMode.NULL;
         int blockLength;
-
         /* Always include a terminator */
         for (i = 0; i < 4; i++) {
             binaryCount[i] = 0;
         }
-
         for (i = 0; i < content.length(); i++) {
-            if(currentMode != inputMode[i]) {
-
+            if (currentMode != inputMode[i]) {
                 blockLength = 0;
                 do {
                     blockLength++;
-                } while (((i + blockLength) < content.length())
-                    && (inputMode[i + blockLength] == inputMode[i]));
-
-                switch (inputMode[i]) {
+                } while (((i + blockLength) < content.length()) && (inputMode[i + blockLength] == inputMode[i]));
+                switch(inputMode[i]) {
                     case KANJI:
                         binaryCount[2] += 5 + (blockLength * 13);
                         binaryCount[3] += 7 + (blockLength * 13);
-
                         break;
                     case BINARY:
                         binaryCount[2] += 6 + (blockLength * 8);
@@ -632,7 +309,6 @@ public class MicroQrCode extends Symbol {
                         break;
                     case ALPHANUM:
                         int alphaLength;
-
                         if ((blockLength % 2) == 1) {
                             /* Odd length block */
                             alphaLength = ((blockLength - 1) / 2) * 11;
@@ -641,14 +317,12 @@ public class MicroQrCode extends Symbol {
                             /* Even length block */
                             alphaLength = (blockLength / 2) * 11;
                         }
-
                         binaryCount[1] += 4 + alphaLength;
                         binaryCount[2] += 6 + alphaLength;
                         binaryCount[3] += 8 + alphaLength;
                         break;
                     case NUMERIC:
                         int numLength;
-
                         switch(blockLength % 3) {
                             case 1:
                                 /* one digit left over */
@@ -665,7 +339,6 @@ public class MicroQrCode extends Symbol {
                                 numLength = (blockLength / 3) * 10;
                                 break;
                         }
-
                         binaryCount[0] += 3 + numLength;
                         binaryCount[1] += 5 + numLength;
                         binaryCount[2] += 7 + numLength;
@@ -675,16 +348,13 @@ public class MicroQrCode extends Symbol {
                 currentMode = inputMode[i];
             }
         }
-
         /* Add terminator */
         if (binaryCount[1] < 37) {
             binaryCount[1] += 5;
         }
-
         if (binaryCount[2] < 81) {
             binaryCount[2] += 7;
         }
-
         if (binaryCount[3] < 125) {
             binaryCount[3] += 9;
         }
@@ -698,191 +368,161 @@ public class MicroQrCode extends Symbol {
         String oneChar;
         byte[] jisBytes;
         int count, first, second, third;
-
         info("Encoding: ");
-
         while (position < content.length()) {
-
             data_block = inputMode[position];
             blockLength = 0;
             do {
                 blockLength++;
-            } while (((position + blockLength) < content.length())
-                    && (inputMode[position + blockLength] == data_block));
-
-            switch (data_block) {
-            case KANJI:
-                /* Kanji mode */
-                /* Mode indicator */
-                switch (version) {
-                case 2:
-                    binary.append("11");
-                    break;
-                case 3:
-                    binary.append("011");
-                    break;
-                }
-
-                /* Character count indicator */
-                binary.append(toBinary(blockLength, 1 << version)); /* version = 2..3 */
-
-                info("KANJ (" + blockLength + ") ");
-
-                /* Character representation */
-                for (i = 0; i < blockLength; i++) {
-                    oneChar = "";
-                    oneChar += content.charAt(position + i);
-
-                    /* Convert Unicode input to Shift-JIS */
-                    try {
-                        jisBytes = oneChar.getBytes("SJIS");
-                    } catch (UnsupportedEncodingException e) {
-                        throw new OkapiInternalException("Character encoding error");
+            } while (((position + blockLength) < content.length()) && (inputMode[position + blockLength] == data_block));
+            switch(data_block) {
+                case KANJI:
+                    /* Kanji mode */
+                    /* Mode indicator */
+                    switch(version) {
+                        case 2:
+                            binary.append("11");
+                            break;
+                        case 3:
+                            binary.append("011");
+                            break;
                     }
-
-                    jis = ((jisBytes[0] & 0xFF) << 8);
-                    if (jisBytes.length > 1) {
-                        jis += (jisBytes[1] & 0xFF);
-                    }
-
-                    if (jis > 0x9fff) {
-                        jis -= 0xc140;
-                    } else {
-                        jis -= 0x8140;
-                    }
-                    msb = (jis & 0xff00) >> 8;
-                    lsb = (jis & 0xff);
-                    prod = (msb * 0xc0) + lsb;
-
-                    binary.append(toBinary(prod, 0x1000));
-
-                    infoSpace(prod);
-                }
-
-                break;
-            case BINARY:
-                /* Byte mode */
-                /* Mode indicator */
-                switch (version) {
-                case 2:
-                    binary.append("10");
-                    break;
-                case 3:
-                    binary.append("010");
-                    break;
-                }
-
-                /* Character count indicator */
-                binary.append(toBinary(blockLength, 2 << version)); /* version = 2..3 */
-
-                info("BYTE (" + blockLength + ") ");
-
-                /* Character representation */
-                for (i = 0; i < blockLength; i++) {
-                    int lbyte = content.charAt(position + i);
-                    binary.append(toBinary(lbyte, 0x80));
-                    infoSpace(lbyte);
-                }
-
-                break;
-            case ALPHANUM:
-                /* Alphanumeric mode */
-                /* Mode indicator */
-                switch (version) {
-                case 1:
-                    binary.append("1");
-                    break;
-                case 2:
-                    binary.append("01");
-                    break;
-                case 3:
-                    binary.append("001");
-                    break;
-                }
-
-                /* Character count indicator */
-                binary.append(toBinary(blockLength, 2 << version)); /* version = 1..3 */
-
-                info("ALPH (" + blockLength + ") ");
-
-                /* Character representation */
-                i = 0;
-                while (i < blockLength) {
-                    first = positionOf(content.charAt(position + i), RHODIUM);
-                    count = 1;
-                    prod = first;
-
-                    if (i + 1 < blockLength) {
-                        if (inputMode[position + i + 1] == qrMode.ALPHANUM) {
-                            second = positionOf(content.charAt(position + i + 1), RHODIUM);
-                            count = 2;
-                            prod = (first * 45) + second;
+                    /* Character count indicator */
+                    binary.append(toBinary(blockLength, 1 << version));
+                    /* version = 2..3 */
+                    info("KANJ (" + blockLength + ") ");
+                    /* Character representation */
+                    for (i = 0; i < blockLength; i++) {
+                        oneChar = "";
+                        oneChar += content.charAt(position + i);
+                        /* Convert Unicode input to Shift-JIS */
+                        try {
+                            jisBytes = oneChar.getBytes("SJIS");
+                        } catch (UnsupportedEncodingException e) {
+                            throw new OkapiInternalException("Character encoding error");
                         }
-                    }
-
-                    binary.append(toBinary(prod, 1 << (5 * count))); /* count = 1..2 */
-
-                    infoSpace(prod);
-
-                    i += 2;
-                }
-
-                break;
-            case NUMERIC:
-                /* Numeric mode */
-                /* Mode indicator */
-                switch (version) {
-                case 1:
-                    binary.append("0");
-                    break;
-                case 2:
-                    binary.append("00");
-                    break;
-                case 3:
-                    binary.append("000");
-                    break;
-                }
-
-                /* Character count indicator */
-                binary.append(toBinary(blockLength, 4 << version)); /* version = 0..3 */
-
-                info("NUMB (" + blockLength + ") ");
-
-                /* Character representation */
-                i = 0;
-                while (i < blockLength) {
-                    first = Character.getNumericValue(content.charAt(position + i));
-                    count = 1;
-                    prod = first;
-
-                    if ((i + 1) < blockLength) {
-                        if (inputMode[position + i + 1] == qrMode.NUMERIC) {
-                            second = Character.getNumericValue(content.charAt(position + i + 1));
-                            count = 2;
-                            prod = (prod * 10) + second;
+                        jis = ((jisBytes[0] & 0xFF) << 8);
+                        if (jisBytes.length > 1) {
+                            jis += (jisBytes[1] & 0xFF);
                         }
-                    }
-
-                    if ((i + 2) < blockLength) {
-                        if (inputMode[position + i + 2] == qrMode.NUMERIC) {
-                            third = Character.getNumericValue(content.charAt(position + i + 2));
-                            count = 3;
-                            prod = (prod * 10) + third;
+                        if (jis > 0x9fff) {
+                            jis -= 0xc140;
+                        } else {
+                            jis -= 0x8140;
                         }
+                        msb = (jis & 0xff00) >> 8;
+                        lsb = (jis & 0xff);
+                        prod = (msb * 0xc0) + lsb;
+                        binary.append(toBinary(prod, 0x1000));
+                        infoSpace(prod);
                     }
-
-                    binary.append(toBinary(prod, 1 << (3 * count))); /* count = 1..3 */
-
-                    infoSpace(prod);
-
-                    i += 3;
-                }
-                break;
+                    break;
+                case BINARY:
+                    /* Byte mode */
+                    /* Mode indicator */
+                    switch(version) {
+                        case 2:
+                            binary.append("10");
+                            break;
+                        case 3:
+                            binary.append("010");
+                            break;
+                    }
+                    /* Character count indicator */
+                    binary.append(toBinary(blockLength, 2 << version));
+                    /* version = 2..3 */
+                    info("BYTE (" + blockLength + ") ");
+                    /* Character representation */
+                    for (i = 0; i < blockLength; i++) {
+                        int lbyte = content.charAt(position + i);
+                        binary.append(toBinary(lbyte, 0x80));
+                        infoSpace(lbyte);
+                    }
+                    break;
+                case ALPHANUM:
+                    /* Alphanumeric mode */
+                    /* Mode indicator */
+                    switch(version) {
+                        case 1:
+                            binary.append("1");
+                            break;
+                        case 2:
+                            binary.append("01");
+                            break;
+                        case 3:
+                            binary.append("001");
+                            break;
+                    }
+                    /* Character count indicator */
+                    binary.append(toBinary(blockLength, 2 << version));
+                    /* version = 1..3 */
+                    info("ALPH (" + blockLength + ") ");
+                    /* Character representation */
+                    i = 0;
+                    while (i < blockLength) {
+                        first = positionOf(content.charAt(position + i), RHODIUM);
+                        count = 1;
+                        prod = first;
+                        if (i + 1 < blockLength) {
+                            if (inputMode[position + i + 1] == qrMode.ALPHANUM) {
+                                second = positionOf(content.charAt(position + i + 1), RHODIUM);
+                                count = 2;
+                                prod = (first * 45) + second;
+                            }
+                        }
+                        binary.append(toBinary(prod, 1 << (5 * count)));
+                        /* count = 1..2 */
+                        infoSpace(prod);
+                        i += 2;
+                    }
+                    break;
+                case NUMERIC:
+                    /* Numeric mode */
+                    /* Mode indicator */
+                    switch(version) {
+                        case 1:
+                            binary.append("0");
+                            break;
+                        case 2:
+                            binary.append("00");
+                            break;
+                        case 3:
+                            binary.append("000");
+                            break;
+                    }
+                    /* Character count indicator */
+                    binary.append(toBinary(blockLength, 4 << version));
+                    /* version = 0..3 */
+                    info("NUMB (" + blockLength + ") ");
+                    /* Character representation */
+                    i = 0;
+                    while (i < blockLength) {
+                        first = Character.getNumericValue(content.charAt(position + i));
+                        count = 1;
+                        prod = first;
+                        if ((i + 1) < blockLength) {
+                            if (inputMode[position + i + 1] == qrMode.NUMERIC) {
+                                second = Character.getNumericValue(content.charAt(position + i + 1));
+                                count = 2;
+                                prod = (prod * 10) + second;
+                            }
+                        }
+                        if ((i + 2) < blockLength) {
+                            if (inputMode[position + i + 2] == qrMode.NUMERIC) {
+                                third = Character.getNumericValue(content.charAt(position + i + 2));
+                                count = 3;
+                                prod = (prod * 10) + third;
+                            }
+                        }
+                        binary.append(toBinary(prod, 1 << (3 * count)));
+                        /* count = 1..3 */
+                        infoSpace(prod);
+                        i += 3;
+                    }
+                    break;
             }
-
             position += blockLength;
         }
-
         /* Add terminator */
         switch(version) {
             case 0:
@@ -904,7 +544,6 @@ public class MicroQrCode extends Symbol {
                 }
                 break;
         }
-
         infoLine();
     }
 
@@ -914,10 +553,8 @@ public class MicroQrCode extends Symbol {
         int data_codewords, ecc_codewords;
         int[] data_blocks = new int[4];
         int[] ecc_blocks = new int[3];
-
         bits_total = 20;
         latch = 0;
-
         /* Manage last (4-bit) block */
         bits_left = bits_total - binary.length();
         if (bits_left <= 4) {
@@ -926,7 +563,6 @@ public class MicroQrCode extends Symbol {
             }
             latch = 1;
         }
-
         if (latch == 0) {
             /* Complete current byte */
             remainder = 8 - (binary.length() % 8);
@@ -936,7 +572,6 @@ public class MicroQrCode extends Symbol {
             for (i = 0; i < remainder; i++) {
                 binary.append("0");
             }
-
             /* Add padding */
             bits_left = bits_total - binary.length();
             if (bits_left > 4) {
@@ -951,10 +586,8 @@ public class MicroQrCode extends Symbol {
             }
             binary.append("0000");
         }
-
         data_codewords = 3;
         ecc_codewords = 2;
-
         /* Copy data into codewords */
         for (i = 0; i < (data_codewords - 1); i++) {
             data_blocks[i] = 0;
@@ -996,18 +629,15 @@ public class MicroQrCode extends Symbol {
         if (binary.charAt(19) == '1') {
             data_blocks[2] += 0x01;
         }
-
         info("Codewords: ");
         for (i = 0; i < data_codewords; i++) {
             infoSpace(data_blocks[i]);
         }
         infoLine();
-
         /* Calculate Reed-Solomon error codewords */
         ReedSolomon rs = ReedSolomon.get(0x11d, ecc_codewords, 0, true);
         int[] result = rs.encode(data_codewords, data_blocks);
         System.arraycopy(result, 0, ecc_blocks, 0, ecc_codewords);
-
         /* Add Reed-Solomon codewords to binary data */
         for (i = 0; i < ecc_codewords; i++) {
             binary.append(toBinary(ecc_blocks[ecc_codewords - i - 1], 0x80));
@@ -1020,12 +650,11 @@ public class MicroQrCode extends Symbol {
         int data_codewords, ecc_codewords;
         int[] data_blocks = new int[6];
         int[] ecc_blocks = new int[7];
-
-        bits_total = 40; // ecc_mode == EccMode.L
+        // ecc_mode == EccMode.L
+        bits_total = 40;
         if (ecc_mode == EccMode.M) {
             bits_total = 32;
         }
-
         /* Complete current byte */
         remainder = 8 - (binary.length() % 8);
         if (remainder == 8) {
@@ -1034,7 +663,6 @@ public class MicroQrCode extends Symbol {
         for (i = 0; i < remainder; i++) {
             binary.append("0");
         }
-
         /* Add padding */
         bits_left = bits_total - binary.length();
         remainder = bits_left / 8;
@@ -1045,14 +673,13 @@ public class MicroQrCode extends Symbol {
                 binary.append("11101100");
             }
         }
-
         data_codewords = 5;
-        ecc_codewords = 5; // ecc_mode == EccMode.L
+        // ecc_mode == EccMode.L
+        ecc_codewords = 5;
         if (ecc_mode == EccMode.M) {
             data_codewords = 4;
             ecc_codewords = 6;
         }
-
         /* Copy data into codewords */
         for (i = 0; i < data_codewords; i++) {
             data_blocks[i] = 0;
@@ -1081,18 +708,15 @@ public class MicroQrCode extends Symbol {
                 data_blocks[i] += 0x01;
             }
         }
-
         info("Codewords: ");
         for (i = 0; i < data_codewords; i++) {
             infoSpace(data_blocks[i]);
         }
         infoLine();
-
         /* Calculate Reed-Solomon error codewords */
         ReedSolomon rs = ReedSolomon.get(0x11d, ecc_codewords, 0, true);
         int[] result = rs.encode(data_codewords, data_blocks);
         System.arraycopy(result, 0, ecc_blocks, 0, ecc_codewords);
-
         /* Add Reed-Solomon codewords to binary data */
         for (i = 0; i < ecc_codewords; i++) {
             binary.append(toBinary(ecc_blocks[ecc_codewords - i - 1], 0x80));
@@ -1105,14 +729,12 @@ public class MicroQrCode extends Symbol {
         int data_codewords, ecc_codewords;
         int[] data_blocks = new int[12];
         int[] ecc_blocks = new int[12];
-
         latch = 0;
-
-        bits_total = 84; // ecc_mode == EccMode.L
+        // ecc_mode == EccMode.L
+        bits_total = 84;
         if (ecc_mode == EccMode.M) {
             bits_total = 68;
         }
-
         /* Manage last (4-bit) block */
         bits_left = bits_total - binary.length();
         if (bits_left <= 4) {
@@ -1121,7 +743,6 @@ public class MicroQrCode extends Symbol {
             }
             latch = 1;
         }
-
         if (latch == 0) {
             /* Complete current byte */
             remainder = 8 - (binary.length() % 8);
@@ -1131,7 +752,6 @@ public class MicroQrCode extends Symbol {
             for (i = 0; i < remainder; i++) {
                 binary.append("0");
             }
-
             /* Add padding */
             bits_left = bits_total - binary.length();
             if (bits_left > 4) {
@@ -1146,14 +766,13 @@ public class MicroQrCode extends Symbol {
             }
             binary.append("0000");
         }
-
         data_codewords = 11;
-        ecc_codewords = 6; // ecc_mode == EccMode.L
+        // ecc_mode == EccMode.L
+        ecc_codewords = 6;
         if (ecc_mode == EccMode.M) {
             data_codewords = 9;
             ecc_codewords = 8;
         }
-
         /* Copy data into codewords */
         for (i = 0; i < (data_codewords - 1); i++) {
             data_blocks[i] = 0;
@@ -1182,7 +801,6 @@ public class MicroQrCode extends Symbol {
                 data_blocks[i] += 0x01;
             }
         }
-
         if (ecc_mode == EccMode.L) {
             data_blocks[10] = 0;
             if (binary.charAt(80) == '1') {
@@ -1198,7 +816,6 @@ public class MicroQrCode extends Symbol {
                 data_blocks[10] += 0x01;
             }
         }
-
         if (ecc_mode == EccMode.M) {
             data_blocks[8] = 0;
             if (binary.charAt(64) == '1') {
@@ -1214,18 +831,15 @@ public class MicroQrCode extends Symbol {
                 data_blocks[8] += 0x01;
             }
         }
-
         info("Codewords: ");
         for (i = 0; i < data_codewords; i++) {
             infoSpace(data_blocks[i]);
         }
         infoLine();
-
         /* Calculate Reed-Solomon error codewords */
         ReedSolomon rs = ReedSolomon.get(0x11d, ecc_codewords, 0, true);
         int[] result = rs.encode(data_codewords, data_blocks);
         System.arraycopy(result, 0, ecc_blocks, 0, ecc_codewords);
-
         /* Add Reed-Solomon codewords to binary data */
         for (i = 0; i < ecc_codewords; i++) {
             binary.append(toBinary(ecc_blocks[ecc_codewords - i - 1], 0x80));
@@ -1238,15 +852,14 @@ public class MicroQrCode extends Symbol {
         int data_codewords, ecc_codewords;
         int[] data_blocks = new int[17];
         int[] ecc_blocks = new int[15];
-
-        bits_total = 128; // ecc_mode == EccMode.L
+        // ecc_mode == EccMode.L
+        bits_total = 128;
         if (ecc_mode == EccMode.M) {
             bits_total = 112;
         }
         if (ecc_mode == EccMode.Q) {
             bits_total = 80;
         }
-
         /* Complete current byte */
         remainder = 8 - (binary.length() % 8);
         if (remainder == 8) {
@@ -1255,7 +868,6 @@ public class MicroQrCode extends Symbol {
         for (i = 0; i < remainder; i++) {
             binary.append("0");
         }
-
         /* Add padding */
         bits_left = bits_total - binary.length();
         remainder = bits_left / 8;
@@ -1266,9 +878,9 @@ public class MicroQrCode extends Symbol {
                 binary.append("11101100");
             }
         }
-
         data_codewords = 16;
-        ecc_codewords = 8; // ecc_mode == EccMode.L
+        // ecc_mode == EccMode.L
+        ecc_codewords = 8;
         if (ecc_mode == EccMode.M) {
             data_codewords = 14;
             ecc_codewords = 10;
@@ -1277,7 +889,6 @@ public class MicroQrCode extends Symbol {
             data_codewords = 10;
             ecc_codewords = 14;
         }
-
         /* Copy data into codewords */
         for (i = 0; i < data_codewords; i++) {
             data_blocks[i] = 0;
@@ -1306,18 +917,15 @@ public class MicroQrCode extends Symbol {
                 data_blocks[i] += 0x01;
             }
         }
-
         info("Codewords: ");
         for (i = 0; i < data_codewords; i++) {
             infoSpace(data_blocks[i]);
         }
         infoLine();
-
         /* Calculate Reed-Solomon error codewords */
         ReedSolomon rs = ReedSolomon.get(0x11d, ecc_codewords, 0, true);
         int[] result = rs.encode(data_codewords, data_blocks);
         System.arraycopy(result, 0, ecc_blocks, 0, ecc_codewords);
-
         /* Add Reed-Solomon codewords to binary data */
         for (i = 0; i < ecc_codewords; i++) {
             binary.append(toBinary(ecc_blocks[ecc_codewords - i - 1], 0x80));
@@ -1326,7 +934,6 @@ public class MicroQrCode extends Symbol {
 
     private void setupBitGrid(int size) {
         int i, toggle = 1;
-
         /* Add timing patterns */
         for (i = 0; i < size; i++) {
             if (toggle == 1) {
@@ -1339,18 +946,14 @@ public class MicroQrCode extends Symbol {
                 toggle = 1;
             }
         }
-
         /* Add finder patterns */
         placeFinderPattern(size, 0, 0);
-
         /* Add separators */
         for (i = 0; i < 7; i++) {
             grid[(7 * size) + i] = 0x10;
             grid[(i * size) + 7] = 0x10;
         }
         grid[(7 * size) + 7] = 0x10;
-
-
         /* Reserve space for format information */
         for (i = 0; i < 8; i++) {
             grid[(8 * size) + i] += 0x20;
@@ -1361,17 +964,7 @@ public class MicroQrCode extends Symbol {
 
     private void placeFinderPattern(int size, int x, int y) {
         int xp, yp;
-
-        int[] finder = {
-            1, 1, 1, 1, 1, 1, 1,
-            1, 0, 0, 0, 0, 0, 1,
-            1, 0, 1, 1, 1, 0, 1,
-            1, 0, 1, 1, 1, 0, 1,
-            1, 0, 1, 1, 1, 0, 1,
-            1, 0, 0, 0, 0, 0, 1,
-            1, 1, 1, 1, 1, 1, 1
-        };
-
+        int[] finder = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 };
         for (xp = 0; xp < 7; xp++) {
             for (yp = 0; yp < 7; yp++) {
                 if (finder[xp + (7 * yp)] == 1) {
@@ -1385,16 +978,14 @@ public class MicroQrCode extends Symbol {
 
     private void populateBitGrid(int size) {
         boolean goingUp = true;
-        int row = 0; /* right hand side */
-
+        int row = 0;
+        /* right hand side */
         int i, n, x, y;
-
         n = binary.length();
         y = size - 1;
         i = 0;
         do {
             x = (size - 2) - (row * 2);
-
             if ((grid[(y * size) + (x + 1)] & 0xf0) == 0) {
                 if (binary.charAt(i) == '1') {
                     grid[(y * size) + (x + 1)] = 0x01;
@@ -1403,7 +994,6 @@ public class MicroQrCode extends Symbol {
                 }
                 i++;
             }
-
             if (i < n) {
                 if ((grid[(y * size) + x] & 0xf0) == 0) {
                     if (binary.charAt(i) == '1') {
@@ -1414,7 +1004,6 @@ public class MicroQrCode extends Symbol {
                     i++;
                 }
             }
-
             if (goingUp) {
                 y--;
             } else {
@@ -1442,36 +1031,28 @@ public class MicroQrCode extends Symbol {
         int[] value = new int[8];
         int best_val, best_pattern;
         int bit;
-
         int[] mask = new int[size * size];
         eval = new int[size * size];
-
         /* Perform data masking */
         for (x = 0; x < size; x++) {
             for (y = 0; y < size; y++) {
                 mask[(y * size) + x] = 0x00;
-
                 if ((grid[(y * size) + x] & 0xf0) == 0) {
                     if ((y & 1) == 0) {
                         mask[(y * size) + x] += 0x01;
                     }
-
                     if ((((y / 2) + (x / 3)) & 1) == 0) {
                         mask[(y * size) + x] += 0x02;
                     }
-
                     if (((((y * x) & 1) + ((y * x) % 3)) & 1) == 0) {
                         mask[(y * size) + x] += 0x04;
                     }
-
                     if (((((y + x) & 1) + ((y * x) % 3)) & 1) == 0) {
                         mask[(y * size) + x] += 0x08;
                     }
                 }
             }
         }
-
-
         for (x = 0; x < size; x++) {
             for (y = 0; y < size; y++) {
                 if ((grid[(y * size) + x] & 0x01) != 0) {
@@ -1479,16 +1060,13 @@ public class MicroQrCode extends Symbol {
                 } else {
                     p = 0x00;
                 }
-
                 eval[(y * size) + x] = mask[(y * size) + x] ^ p;
             }
         }
-
         /* Evaluate result */
         for (local_pattern = 0; local_pattern < 4; local_pattern++) {
             value[local_pattern] = evaluateBitmask(size, local_pattern);
         }
-
         best_pattern = 0;
         best_val = value[0];
         for (local_pattern = 1; local_pattern < 4; local_pattern++) {
@@ -1497,32 +1075,31 @@ public class MicroQrCode extends Symbol {
                 best_val = value[local_pattern];
             }
         }
-
         /* Apply mask */
         for (x = 0; x < size; x++) {
             for (y = 0; y < size; y++) {
                 bit = 0;
-                switch (best_pattern) {
-                case 0:
-                    if ((mask[(y * size) + x] & 0x01) != 0) {
-                        bit = 1;
-                    }
-                    break;
-                case 1:
-                    if ((mask[(y * size) + x] & 0x02) != 0) {
-                        bit = 1;
-                    }
-                    break;
-                case 2:
-                    if ((mask[(y * size) + x] & 0x04) != 0) {
-                        bit = 1;
-                    }
-                    break;
-                case 3:
-                    if ((mask[(y * size) + x] & 0x08) != 0) {
-                        bit = 1;
-                    }
-                    break;
+                switch(best_pattern) {
+                    case 0:
+                        if ((mask[(y * size) + x] & 0x01) != 0) {
+                            bit = 1;
+                        }
+                        break;
+                    case 1:
+                        if ((mask[(y * size) + x] & 0x02) != 0) {
+                            bit = 1;
+                        }
+                        break;
+                    case 2:
+                        if ((mask[(y * size) + x] & 0x04) != 0) {
+                            bit = 1;
+                        }
+                        break;
+                    case 3:
+                        if ((mask[(y * size) + x] & 0x08) != 0) {
+                            bit = 1;
+                        }
+                        break;
                 }
                 if (bit == 1) {
                     if ((grid[(y * size) + x] & 0x01) != 0) {
@@ -1533,28 +1110,25 @@ public class MicroQrCode extends Symbol {
                 }
             }
         }
-
         return best_pattern;
     }
 
     private int evaluateBitmask(int size, int pattern) {
         int sum1, sum2, i, filter = 0, retval;
-
-        switch (pattern) {
-        case 0:
-            filter = 0x01;
-            break;
-        case 1:
-            filter = 0x02;
-            break;
-        case 2:
-            filter = 0x04;
-            break;
-        case 3:
-            filter = 0x08;
-            break;
+        switch(pattern) {
+            case 0:
+                filter = 0x01;
+                break;
+            case 1:
+                filter = 0x02;
+                break;
+            case 2:
+                filter = 0x04;
+                break;
+            case 3:
+                filter = 0x08;
+                break;
         }
-
         sum1 = 0;
         sum2 = 0;
         for (i = 1; i < size; i++) {
@@ -1565,13 +1139,11 @@ public class MicroQrCode extends Symbol {
                 sum2++;
             }
         }
-
         if (sum1 <= sum2) {
             retval = (sum1 * 16) + sum2;
         } else {
             retval = (sum2 * 16) + sum1;
         }
-
         return retval;
     }
 }

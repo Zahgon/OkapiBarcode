@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.gui;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 import uk.org.okapibarcode.graphics.Color;
 import uk.org.okapibarcode.output.PostScriptRenderer;
 import uk.org.okapibarcode.output.SvgRenderer;
@@ -36,41 +33,6 @@ import uk.org.okapibarcode.output.SvgRenderer;
 public class SaveImage {
 
     public void save(File file, JPanel panel) throws IOException {
-
-        String extension;
-        int i = file.getName().lastIndexOf('.');
-        if (i > 0) {
-            extension = file.getName().substring(i + 1).toLowerCase();
-        } else {
-            extension = "png";
-        }
-
-        Color paper = new Color(OkapiUI.paperColour.getRGB());
-        Color ink = new Color(OkapiUI.inkColour.getRGB());
-
-        switch (extension) {
-            case "png":
-            case "gif":
-            case "jpg":
-            case "bmp":
-                int w = OkapiUI.symbol.getWidth() * OkapiUI.factor;
-                int h = OkapiUI.symbol.getHeight() * OkapiUI.factor;
-                BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-                panel.paint(bi.getGraphics());
-                ImageIO.write(bi, extension, file);
-                break;
-            case "svg":
-                SvgRenderer svg = new SvgRenderer(new FileOutputStream(file), OkapiUI.factor, paper, ink, true);
-                svg.render(OkapiUI.symbol);
-                break;
-            case "eps":
-                PostScriptRenderer eps = new PostScriptRenderer(new FileOutputStream(file), OkapiUI.factor, paper, ink);
-                eps.render(OkapiUI.symbol);
-                break;
-            default:
-                System.out.println("Unsupported output format");
-                break;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
-
 }

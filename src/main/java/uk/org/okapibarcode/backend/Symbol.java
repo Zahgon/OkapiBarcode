@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.backend.HumanReadableLocation.BOTTOM;
@@ -23,7 +22,6 @@ import static uk.org.okapibarcode.graphics.TextAlignment.CENTER;
 import static uk.org.okapibarcode.util.Arrays.containsAt;
 import static uk.org.okapibarcode.util.Arrays.positionOf;
 import static uk.org.okapibarcode.util.Doubles.roughlyEqual;
-
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.nio.charset.Charset;
@@ -33,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import uk.org.okapibarcode.graphics.Circle;
 import uk.org.okapibarcode.graphics.Hexagon;
 import uk.org.okapibarcode.graphics.Rectangle;
@@ -52,70 +49,107 @@ public abstract class Symbol {
 
     // TODO: Setting attributes like module width, font size, etc should probably throw
     // an exception if set *after* encoding has already been completed.
-
     // TODO: GS1 data is encoded slightly differently depending on whether [AI]data content
     // is used, or if FNC1 escape sequences are used. We may want to make sure that they
     // encode to the same output.
-
-    /** The type of input data to expect in {@link #setContent(String)}. */
+    /**
+     * The type of input data to expect in {@link #setContent(String)}.
+     */
     public enum DataType {
-        /** Extended Channel Interpretations (the default). */
+
+        /**
+         * Extended Channel Interpretations (the default).
+         */
         ECI,
-        /** GS1 Application Identifier and data pairs in "[AI]DATA" format. */
+        /**
+         * GS1 Application Identifier and data pairs in "[AI]DATA" format.
+         */
         GS1,
-        /** Health Industry Bar Code number (without check digit). */
+        /**
+         * Health Industry Bar Code number (without check digit).
+         */
         HIBC
     }
 
     protected static final int FNC1 = -1;
+
     protected static final int FNC2 = -2;
+
     protected static final int FNC3 = -3;
+
     protected static final int FNC4 = -4;
 
     protected static final String FNC1_STRING = "\\<FNC1>";
+
     protected static final String FNC2_STRING = "\\<FNC2>";
+
     protected static final String FNC3_STRING = "\\<FNC3>";
+
     protected static final String FNC4_STRING = "\\<FNC4>";
 
-    private static char[] HIBC_CHAR_TABLE = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-        'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-        'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$',
-        '/', '+', '%' };
+    private static char[] HIBC_CHAR_TABLE = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%' };
 
     // user-specified values and settings
-
     protected DataType inputDataType = DataType.ECI;
+
     protected boolean readerInit;
+
     protected int defaultHeight = 40;
+
     protected int quietZoneHorizontal = 0;
+
     protected int quietZoneVertical = 0;
+
     protected int moduleWidth = 1;
+
     protected Font font;
+
     protected String fontName = "Helvetica";
+
     protected int fontSize = 8;
+
     protected HumanReadableLocation humanReadableLocation = BOTTOM;
+
     protected TextAlignment humanReadableAlignment = CENTER;
+
     protected boolean emptyContentAllowed = false;
 
     // internal state calculated when setContent() is called
-
     protected String content;
+
     protected int eciMode = -1;
-    protected int[] inputData; // usually bytes (values 0-255), but may also contain FNC flags
+
+    // usually bytes (values 0-255), but may also contain FNC flags
+    protected int[] inputData;
+
     protected String readable = "";
+
     protected String[] pattern;
+
     protected int[] rowHeight;
+
     protected int rowCount = 0;
+
     protected int symbolHeight = 0;
+
     protected int symbolWidth = 0;
+
     protected StringBuilder encodeInfo = new StringBuilder();
-    protected List< TextBox > texts = new ArrayList<>();        // note positions do not account for quiet zones (handled in renderers)
-    protected List< Hexagon > hexagons = new ArrayList<>();     // note positions do not account for quiet zones (handled in renderers)
-    protected List< Circle > target = new ArrayList<>();        // note positions do not account for quiet zones (handled in renderers)
-    protected List< Rectangle > rectangles = new ArrayList<>(); // note positions do not account for quiet zones (handled in renderers)
-    protected Map< Double, Rectangle > prevRectangles = new HashMap<>(); // x-position -> last seen rectangle at that position (optimization)
+
+    // note positions do not account for quiet zones (handled in renderers)
+    protected List<TextBox> texts = new ArrayList<>();
+
+    // note positions do not account for quiet zones (handled in renderers)
+    protected List<Hexagon> hexagons = new ArrayList<>();
+
+    // note positions do not account for quiet zones (handled in renderers)
+    protected List<Circle> target = new ArrayList<>();
+
+    // note positions do not account for quiet zones (handled in renderers)
+    protected List<Rectangle> rectangles = new ArrayList<>();
+
+    // x-position -> last seen rectangle at that position (optimization)
+    protected Map<Double, Rectangle> prevRectangles = new HashMap<>();
 
     /**
      * <p>Sets the type of input data. This setting influences what pre-processing is done on
@@ -133,10 +167,7 @@ public abstract class Symbol {
      * @param dataType the type of input data
      */
     public void setDataType(DataType dataType) {
-        if (dataType == DataType.GS1 && !supportsGs1()) {
-            throw new IllegalArgumentException("This symbology type does not support GS1 data");
-        }
-        inputDataType = dataType;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -145,7 +176,7 @@ public abstract class Symbol {
      * @return the type of input data in this symbol
      */
     public DataType getDataType() {
-        return inputDataType;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -154,7 +185,7 @@ public abstract class Symbol {
      * @return <code>true</code> if this type of symbology supports GS1 data
      */
     public boolean supportsGs1() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -164,7 +195,7 @@ public abstract class Symbol {
      * @param readerInit whether or not to enable reader initialization
      */
     public void setReaderInit(boolean readerInit) {
-        this.readerInit = readerInit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -173,7 +204,7 @@ public abstract class Symbol {
      * @return whether or not reader initialization is enabled
      */
     public boolean getReaderInit() {
-        return readerInit;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -183,7 +214,7 @@ public abstract class Symbol {
      * @param barHeight the default bar height for this symbol
      */
     public void setBarHeight(int barHeight) {
-        this.defaultHeight = barHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -193,7 +224,7 @@ public abstract class Symbol {
      * @return the default bar height for this symbol
      */
     public int getBarHeight() {
-        return defaultHeight;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -203,7 +234,7 @@ public abstract class Symbol {
      * @param moduleWidth the module width for this symbol
      */
     public void setModuleWidth(int moduleWidth) {
-        this.moduleWidth = moduleWidth;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -213,7 +244,7 @@ public abstract class Symbol {
      * @return the module width for this symbol
      */
     public int getModuleWidth() {
-        return moduleWidth;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -223,7 +254,7 @@ public abstract class Symbol {
      * @param quietZoneHorizontal the horizontal quiet zone (white space) added to the left and to the right of this symbol
      */
     public void setQuietZoneHorizontal(int quietZoneHorizontal) {
-        this.quietZoneHorizontal = quietZoneHorizontal;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -233,7 +264,7 @@ public abstract class Symbol {
      * @return the horizontal quiet zone (white space) added to the left and to the right of this symbol
      */
     public int getQuietZoneHorizontal() {
-        return quietZoneHorizontal;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -243,7 +274,7 @@ public abstract class Symbol {
      * @param quietZoneVertical the vertical quiet zone (white space) added above and below this symbol
      */
     public void setQuietZoneVertical(int quietZoneVertical) {
-        this.quietZoneVertical = quietZoneVertical;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -253,7 +284,7 @@ public abstract class Symbol {
      * @return the vertical quiet zone (white space) added above and below this symbol
      */
     public int getQuietZoneVertical() {
-        return quietZoneVertical;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -267,9 +298,7 @@ public abstract class Symbol {
      * @param font the font to use to render the human-readable text
      */
     public void setFont(Font font) {
-        this.font = font;
-        this.fontName = font.getFontName();
-        this.fontSize = font.getSize();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -278,7 +307,7 @@ public abstract class Symbol {
      * @return the font to use to render the human-readable text
      */
     public Font getFont() {
-        return font;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -294,8 +323,7 @@ public abstract class Symbol {
      * @param fontName the name of the font to use to render the human-readable text
      */
     public void setFontName(String fontName) {
-        this.fontName = Objects.requireNonNull(fontName, "font name may not be null");
-        this.font = null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -304,7 +332,7 @@ public abstract class Symbol {
      * @return the name of the font to use to render the human-readable text
      */
     public String getFontName() {
-        return fontName;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -317,8 +345,7 @@ public abstract class Symbol {
      * @param fontSize the size of the font to use to render the human-readable text
      */
     public void setFontSize(int fontSize) {
-        this.fontSize = fontSize;
-        this.font = null;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -327,7 +354,7 @@ public abstract class Symbol {
      * @return the size of the font to use to render the human-readable text
      */
     public int getFontSize() {
-        return fontSize;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -336,7 +363,7 @@ public abstract class Symbol {
      * @return the width of the encoded symbol
      */
     public int getWidth() {
-        return symbolWidth + (2 * quietZoneHorizontal);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -347,7 +374,7 @@ public abstract class Symbol {
      *         quiet zone
      */
     public int getHeight() {
-        return symbolHeight + getHumanReadableHeight() + (2 * quietZoneVertical);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -357,11 +384,7 @@ public abstract class Symbol {
      * @return the height of the human-readable text
      */
     public int getHumanReadableHeight() {
-        if (texts.isEmpty()) {
-            return 0;
-        } else {
-            return getTheoreticalHumanReadableHeight();
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -370,7 +393,7 @@ public abstract class Symbol {
      * @return the height of the human-readable text, assuming this symbol had human-readable text
      */
     protected int getTheoreticalHumanReadableHeight() {
-        return (int) Math.ceil(fontSize * 1.2); // 0.2 space between bars and text
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -379,7 +402,7 @@ public abstract class Symbol {
      * @return a human readable summary of the decisions made by the encoder when creating a symbol
      */
     public String getEncodeInfo() {
-        return encodeInfo.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -429,14 +452,7 @@ public abstract class Symbol {
      * @throws IllegalArgumentException if this symbology does not support ECI or an unsupported ECI mode is requested
      */
     public void setEciMode(int eciMode) {
-        if (!supportsEci()) {
-            throw new IllegalArgumentException("This symbology type does not support ECI");
-        }
-        boolean valid = EciMode.ECIS.stream().anyMatch(eci -> eci.mode == eciMode);
-        if (!valid) {
-            throw new IllegalArgumentException("Unsupported ECI mode: " + eciMode);
-        }
-        this.eciMode = eciMode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -448,7 +464,7 @@ public abstract class Symbol {
      * @see #eciProcess()
      */
     public int getEciMode() {
-        return eciMode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -457,7 +473,7 @@ public abstract class Symbol {
      * @return <code>true</code> if this type of symbology supports ECI (Extended Channel Interpretation)
      */
     public boolean supportsEci() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -466,7 +482,7 @@ public abstract class Symbol {
      * @param humanReadableLocation the location of the human-readable text
      */
     public void setHumanReadableLocation(HumanReadableLocation humanReadableLocation) {
-        this.humanReadableLocation = humanReadableLocation;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -475,7 +491,7 @@ public abstract class Symbol {
      * @return the location of the human-readable text
      */
     public HumanReadableLocation getHumanReadableLocation() {
-        return humanReadableLocation;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -484,7 +500,7 @@ public abstract class Symbol {
      * @param humanReadableAlignment the text alignment of the human-readable text
      */
     public void setHumanReadableAlignment(TextAlignment humanReadableAlignment) {
-        this.humanReadableAlignment = humanReadableAlignment;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -493,7 +509,7 @@ public abstract class Symbol {
      * @return the text alignment of the human-readable text
      */
     public TextAlignment getHumanReadableAlignment() {
-        return humanReadableAlignment;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -507,23 +523,7 @@ public abstract class Symbol {
      * @param rect the rectangle to add
      */
     protected void addRectangle(Rectangle rect) {
-
-        // if this is a 1D linear barcode, exit early (nothing to merge vertically)
-        if (rowCount == 1) {
-            rectangles.add(rect);
-            return;
-        }
-
-        // if this is a 2D barcode, try to merge rectangles
-        Rectangle prev = prevRectangles.get(rect.x);
-        if (prev != null &&
-            roughlyEqual(prev.width, rect.width) &&
-            roughlyEqual(prev.y + prev.height, rect.y)) {
-            prev.height += rect.height;
-        } else {
-            rectangles.add(rect);
-            prevRectangles.put(rect.x, rect);
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -536,14 +536,8 @@ public abstract class Symbol {
      *
      * @param rects the new rectangles
      */
-    protected void setRectangles(List< Rectangle > rects) {
-
-        rectangles.clear();
-        prevRectangles.clear();
-
-        for (Rectangle rect : rects) {
-            addRectangle(rect);
-        }
+    protected void setRectangles(List<Rectangle> rects) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -551,8 +545,8 @@ public abstract class Symbol {
      *
      * @return render information about the rectangles in this symbol
      */
-    public List< Rectangle > getRectangles() {
-        return rectangles;
+    public List<Rectangle> getRectangles() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -560,8 +554,8 @@ public abstract class Symbol {
      *
      * @return render information about the text elements in this symbol
      */
-    public List< TextBox > getTexts() {
-        return texts;
+    public List<TextBox> getTexts() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -569,8 +563,8 @@ public abstract class Symbol {
      *
      * @return render information about the hexagons in this symbol
      */
-    public List< Hexagon > getHexagons() {
-        return hexagons;
+    public List<Hexagon> getHexagons() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -578,73 +572,20 @@ public abstract class Symbol {
      *
      * @return render information about the target circles in this symbol
      */
-    public List< Circle > getTarget() {
-        return target;
+    public List<Circle> getTarget() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected static String bin2pat(CharSequence bin) {
-
-        int len = 0;
-        char prev = '1';
-        StringBuilder pat = new StringBuilder(bin.length());
-
-        for (int i = 0; i < bin.length(); i++) {
-            char val = bin.charAt(i);
-            if (val == prev) {
-                len++;
-            } else {
-                pat.append((char) (len + '0'));
-                prev = val;
-                len = 1;
-            }
-        }
-
-        pat.append((char) (len + '0'));
-        return pat.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected static String bin2pat(int[] bin, int index, int size, StringBuilder pat) {
-
-        int len = 0;
-        int prev = 1;
-        int end = index + size;
-        pat.setLength(0); // reset
-
-        for (int i = index; i < end; i++) {
-            int val = bin[i] & 0x01;
-            if (val == prev) {
-                len++;
-            } else {
-                pat.append((char) (len + '0'));
-                prev = val;
-                len = 1;
-            }
-        }
-
-        pat.append((char) (len + '0'));
-        return pat.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected static String bin2pat(boolean[] bin, int index, int size, StringBuilder pat) {
-
-        int len = 0;
-        boolean prev = true;
-        int end = index + size;
-        pat.setLength(0); // reset
-
-        for (int i = index; i < end; i++) {
-            boolean val = bin[i];
-            if (val == prev) {
-                len++;
-            } else {
-                pat.append((char) (len + '0'));
-                prev = val;
-                len = 1;
-            }
-        }
-
-        pat.append((char) (len + '0'));
-        return pat.toString();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -654,7 +595,7 @@ public abstract class Symbol {
      * @param emptyContentAllowed whether or not empty content is allowed
      */
     public void setEmptyContentAllowed(boolean emptyContentAllowed) {
-        this.emptyContentAllowed = emptyContentAllowed;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -663,7 +604,7 @@ public abstract class Symbol {
      * @return whether or not empty content is allowed
      */
     public boolean getEmptyContentAllowed() {
-        return emptyContentAllowed;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -674,48 +615,7 @@ public abstract class Symbol {
      * @throws OkapiException if no data or data is invalid
      */
     public void setContent(String data) {
-
-        if (readerInit && inputDataType == DataType.GS1) {
-            throw new OkapiInputException("Cannot use both GS1 mode and Reader Initialisation");
-        }
-
-        if (data == null) {
-            data = "";
-        }
-
-        if (data.contains(FNC1_STRING) && !supportsFnc1()) {
-            throw new OkapiInputException("This symbology type does not support direct use of FNC1");
-        } else if (data.contains(FNC2_STRING) && !supportsFnc2()) {
-            throw new OkapiInputException("This symbology type does not support direct use of FNC2");
-        } else if (data.contains(FNC3_STRING) && !supportsFnc3()) {
-            throw new OkapiInputException("This symbology type does not support direct use of FNC3");
-        } else if (data.contains(FNC4_STRING) && !supportsFnc4()) {
-            throw new OkapiInputException("This symbology type does not support direct use of FNC4");
-        }
-
-        encodeInfo.setLength(0); // clear
-
-        switch (inputDataType) {
-            case GS1:
-                content = Gs1.verify(data, FNC1_STRING);
-                readable = data.replace('[', '(').replace(']', ')');
-                break;
-            case HIBC:
-                content = hibcProcess(data);
-                break;
-            default:
-                content = data;
-                break;
-        }
-
-        if (content.isEmpty() && !emptyContentAllowed) {
-            throw new OkapiInputException("No input data");
-        }
-
-        encode();
-        plotSymbol();
-
-        infoLine("Shapes: ", rectangles.size() + hexagons.size() + target.size());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -724,7 +624,7 @@ public abstract class Symbol {
      * @return <code>true</code> if this symbology allows the user to embed {@link #FNC1_STRING} directly in the content
      */
     protected boolean supportsFnc1() {
-        return supportsGs1();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -733,7 +633,7 @@ public abstract class Symbol {
      * @return <code>true</code> if this symbology allows the user to embed {@link #FNC2_STRING} directly in the content
      */
     protected boolean supportsFnc2() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -742,7 +642,7 @@ public abstract class Symbol {
      * @return <code>true</code> if this symbology allows the user to embed {@link #FNC3_STRING} directly in the content
      */
     protected boolean supportsFnc3() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -751,7 +651,7 @@ public abstract class Symbol {
      * @return <code>true</code> if this symbology allows the user to embed {@link #FNC4_STRING} directly in the content
      */
     protected boolean supportsFnc4() {
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -760,7 +660,7 @@ public abstract class Symbol {
      * @return the content encoded by this symbol
      */
     public String getContent() {
-        return content;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -769,155 +669,32 @@ public abstract class Symbol {
      * @return the human-readable text for this symbol
      */
     public String getHumanReadableText() {
-        return readable;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * Chooses the ECI mode most suitable for the content of this symbol and uses it to encode the input data.
      */
     protected void eciProcess() {
-
-        assert supportsEci();
-
-        EciMode eci = determineEci(content, eciMode); // ECI mode may be implicit or explicit
-
-        eciMode = eci.mode;
-        inputData = toBytes(content, eci.charset);
-
-        if (inputData == null) {
-            // user chose the ECI mode explicitly and it can't encode the provided data
-            throw new OkapiInputException("Unable to encode the provided data using the requested ECI mode");
-        }
-
-        infoLine("ECI Mode: ", eci.mode);
-        infoLine("ECI Charset: ", eci.charset.name());
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected static EciMode determineEci(String content, int eciMode) {
-
-        EciMode eci;
-        if (eciMode != -1) {
-            // user chose the ECI mode explicitly
-            eci = EciMode.ECIS.stream().filter(e -> e.mode == eciMode).findFirst().orElse(EciMode.NONE);
-        } else {
-            // detect the ECI mode automatically
-            eci = EciMode.chooseFor(content);
-        }
-
-        if (EciMode.NONE.equals(eci)) {
-            throw new OkapiInputException("Unable to determine ECI mode");
-        }
-
-        return eci;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected static int[] toBytes(String s, Charset charset, int... suffix) {
-
-        if (!charset.newEncoder().canEncode(s)) {
-            return null;
-        }
-
-        byte[] fnc1 = FNC1_STRING.getBytes(charset);
-        byte[] fnc2 = FNC2_STRING.getBytes(charset);
-        byte[] fnc3 = FNC3_STRING.getBytes(charset);
-        byte[] fnc4 = FNC4_STRING.getBytes(charset);
-
-        byte[] bytes = s.getBytes(charset);
-        int[] data = new int[bytes.length + suffix.length];
-
-        int i = 0, j = 0;
-        for (; i < bytes.length; i++, j++) {
-            if (containsAt(bytes, fnc1, i)) {
-                data[j] = FNC1;
-                i += fnc1.length - 1;
-            } else if (containsAt(bytes, fnc2, i)) {
-                data[j] = FNC2;
-                i += fnc1.length - 1;
-            } else if (containsAt(bytes, fnc3, i)) {
-                data[j] = FNC3;
-                i += fnc1.length - 1;
-            } else if (containsAt(bytes, fnc4, i)) {
-                data[j] = FNC4;
-                i += fnc1.length - 1;
-            } else {
-                data[j] = bytes[i] & 0xff;
-            }
-        }
-
-        int k = 0;
-        for (; k < suffix.length; k++) {
-            data[j + k] = suffix[k];
-        }
-
-        if (j + k < i) {
-            data = Arrays.copyOf(data, j + k);
-        }
-
-        return data;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected abstract void encode();
 
     protected void plotSymbol() {
-        int xBlock, yBlock;
-        double x, y, w, h;
-        boolean black;
-
-        resetPlotElements();
-
-        int baseY;
-        if (humanReadableLocation == TOP) {
-            baseY = getTheoreticalHumanReadableHeight();
-        } else {
-            baseY = 0;
-        }
-
-        h = 0;
-        y = baseY;
-
-        for (yBlock = 0; yBlock < rowCount; yBlock++) {
-            black = true;
-            x = 0;
-            h = rowHeight[yBlock];
-            for (xBlock = 0; xBlock < pattern[yBlock].length(); xBlock++) {
-                char c = pattern[yBlock].charAt(xBlock);
-                w = getModuleWidth(c - '0') * moduleWidth;
-                if (black) {
-                    if (w != 0 && h != 0) {
-                        addRectangle(new Rectangle(x, y, w, h));
-                    }
-                    if (x + w > symbolWidth) {
-                        symbolWidth = (int) Math.ceil(x + w);
-                    }
-                }
-                black = !black;
-                x += w;
-            }
-            if ((y - baseY + h) > symbolHeight) {
-                symbolHeight = (int) Math.ceil(y - baseY + h);
-            }
-            y += h;
-        }
-
-        if (humanReadableLocation != NONE && !readable.isEmpty()) {
-            double baseline;
-            if (humanReadableLocation == TOP) {
-                baseline = fontSize;
-            } else {
-                baseline = symbolHeight + fontSize;
-            }
-            texts.add(new TextBox(0, baseline, symbolWidth, readable, humanReadableAlignment));
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void resetPlotElements() {
-        symbolHeight = 0;
-        symbolWidth = 0;
-        texts.clear();
-        hexagons.clear();
-        target.clear();
-        rectangles.clear();
-        prevRectangles.clear();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -928,7 +705,7 @@ public abstract class Symbol {
      * @return the module width to use for the specified original module width
      */
     protected double getModuleWidth(int originalWidth) {
-        return originalWidth;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -937,28 +714,22 @@ public abstract class Symbol {
      * @see <a href="https://sourceforge.net/p/zint/code/ci/master/tree/backend/library.c">Corresponding Zint code</a>
      */
     private String hibcProcess(String source) {
-
         // HIBC 2.6 allows up to 110 characters, not including the "+" prefix or the check digit
         if (source.length() > 110) {
             throw new OkapiInputException("Data too long for HIBC LIC");
         }
-
         source = source.toUpperCase();
         if (!source.matches("[A-Z0-9-\\. \\$/+\\%]+?")) {
             throw OkapiInputException.invalidCharactersInInput();
         }
-
         int counter = 41;
         for (int i = 0; i < source.length(); i++) {
             counter += positionOf(source.charAt(i), HIBC_CHAR_TABLE);
         }
         counter = counter % 43;
-
         char checkDigit = HIBC_CHAR_TABLE[counter];
-
         infoLine("HIBC Check Digit Counter: ", counter);
         infoLine("HIBC Check Digit: ", checkDigit);
-
         return "+" + source + checkDigit;
     }
 
@@ -969,7 +740,7 @@ public abstract class Symbol {
      * @return the intermediate coding of this bar code
      */
     protected int[] getCodewords() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -980,64 +751,47 @@ public abstract class Symbol {
      * @return this bar code's pattern, converted into a set of corresponding codewords
      */
     protected int[] getPatternAsCodewords(int size) {
-        if (size >= 10) {
-            throw new IllegalArgumentException("Pattern groups of 10 or more digits are likely to be too large to parse as integers.");
-        }
-        if (pattern == null || pattern.length == 0) {
-            return new int[0];
-        } else {
-            int count = (int) Math.ceil(pattern[0].length() / (double) size);
-            int[] codewords = new int[pattern.length * count];
-            for (int i = 0; i < pattern.length; i++) {
-                String row = pattern[i];
-                for (int j = 0; j < count; j++) {
-                    int substringStart = j * size;
-                    int substringEnd = Math.min((j + 1) * size, row.length());
-                    codewords[(i * count) + j] = Integer.parseInt(row.substring(substringStart, substringEnd));
-                }
-            }
-            return codewords;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void info(char c) {
-        encodeInfo.append(c);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void info(CharSequence s) {
-        encodeInfo.append(s);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoSpace(int i) {
-        encodeInfo.append(i).append(' ');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoSpace(char c) {
-        encodeInfo.append(c).append(' ');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoLine(CharSequence s) {
-        encodeInfo.append(s).append('\n');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoLine(CharSequence s1, CharSequence s2) {
-        encodeInfo.append(s1).append(s2).append('\n');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoLine(CharSequence s, char c) {
-        encodeInfo.append(s).append(c).append('\n');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoLine(CharSequence s, int i) {
-        encodeInfo.append(s).append(i).append('\n');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoLine(CharSequence s, boolean b) {
-        encodeInfo.append(s).append(b).append('\n');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected void infoLine() {
-        encodeInfo.append('\n');
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -1051,51 +805,13 @@ public abstract class Symbol {
      * @param max the maximum number of symbols to allow
      * @return the split data
      */
-    protected static < T extends Symbol > List< String > split(String data, T testSymbol, FitsCheck< T > check, int max) {
-
-        List< String > split = new ArrayList<>();
-
-        while (!data.isEmpty()) {
-            int low = 0;
-            int high = data.length();
-            while (low <= high) {
-                int mid = (low + high) >>> 1;
-                String candidate = data.substring(0, mid);
-                if (check.fits(candidate, testSymbol, false)) {
-                    low = mid + 1;
-                } else {
-                    high = mid - 1;
-                }
-            }
-            if (high == 0) {
-                throw new OkapiInputException("The specified template is too small to hold both data and structured append metadata");
-            }
-            split.add(data.substring(0, high));
-            data = data.substring(high);
-        }
-
-        if (!split.isEmpty()) {
-            String last = split.get(split.size() - 1);
-            if (!check.fits(last, testSymbol, true)) {
-                int end = last.length() - 1;
-                if (end > 0) {
-                    split.set(split.size() - 1, last.substring(0, end));
-                    split.add(last.substring(end));
-                } else {
-                    throw new OkapiInputException("The specified template is too small to hold both data and structured append metadata");
-                }
-            }
-        }
-
-        if (split.size() > max) {
-            throw new OkapiInputException("The specified template is too small to hold both data and structured append metadata");
-        }
-
-        return split;
+    protected static <T extends Symbol> List<String> split(String data, T testSymbol, FitsCheck<T> check, int max) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @FunctionalInterface
-    protected interface FitsCheck< T extends Symbol > {
+    protected interface FitsCheck<T extends Symbol> {
+
         boolean fits(String data, T testSymbol, boolean last);
     }
 }

@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static uk.org.okapibarcode.util.Arrays.positionOf;
-
 import java.util.Locale;
-
 import uk.org.okapibarcode.graphics.Rectangle;
 
 /**
@@ -35,18 +32,9 @@ import uk.org.okapibarcode.graphics.Rectangle;
  */
 public class KixCode extends Symbol {
 
-    private static final String[] ROYAL_TABLE = {
-        "TTFF", "TDAF", "TDFA", "DTAF", "DTFA", "DDAA", "TADF", "TFTF", "TFDA",
-        "DATF", "DADA", "DFTA", "TAFD", "TFAD", "TFFT", "DAAD", "DAFT", "DFAT",
-        "ATDF", "ADTF", "ADDA", "FTTF", "FTDA", "FDTA", "ATFD", "ADAD", "ADFT",
-        "FTAD", "FTFT", "FDAT", "AADD", "AFTD", "AFDT", "FATD", "FADT", "FFTT"
-    };
+    private static final String[] ROYAL_TABLE = { "TTFF", "TDAF", "TDFA", "DTAF", "DTFA", "DDAA", "TADF", "TFTF", "TFDA", "DATF", "DADA", "DFTA", "TAFD", "TFAD", "TFFT", "DAAD", "DAFT", "DFAT", "ATDF", "ADTF", "ADDA", "FTTF", "FTDA", "FDTA", "ATFD", "ADAD", "ADFT", "FTAD", "FTFT", "FDAT", "AADD", "AFTD", "AFDT", "FATD", "FADT", "FFTT" };
 
-    private static final char[] KR_SET = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-        'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-    };
+    private static final char[] KR_SET = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
     /**
      * Creates a new instance.
@@ -57,65 +45,11 @@ public class KixCode extends Symbol {
 
     @Override
     protected void encode() {
-
-        content = content.toUpperCase(Locale.ENGLISH);
-
-        if(!content.matches("[0-9A-Z]+")) {
-            throw OkapiInputException.invalidCharactersInInput();
-        }
-
-        StringBuilder sb = new StringBuilder(content.length());
-        for (int i = 0; i < content.length(); i++) {
-            int j = positionOf(content.charAt(i), KR_SET);
-            sb.append(ROYAL_TABLE[j]);
-        }
-
-        String dest = sb.toString();
-        infoLine("Encoding: ", dest);
-
-        readable = "";
-        pattern = new String[] { dest };
-        rowHeight = new int[] { defaultHeight };
-        rowCount = 1;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void plotSymbol() {
-        int xBlock;
-        int x, y, w, h;
-
-        resetPlotElements();
-
-        x = 0;
-        w = 1;
-        y = 0;
-        h = 0;
-        for (xBlock = 0; xBlock < pattern[0].length(); xBlock++) {
-            char c = pattern[0].charAt(xBlock);
-            switch (c) {
-                case 'A':
-                    y = 0;
-                    h = 5;
-                    break;
-                case 'D':
-                    y = 3;
-                    h = 5;
-                    break;
-                case 'F':
-                    y = 0;
-                    h = 8;
-                    break;
-                case 'T':
-                    y = 3;
-                    h = 2;
-                    break;
-                default:
-                    throw new OkapiInternalException("Unknown pattern character: " + c);
-            }
-            addRectangle(new Rectangle(x, y, w, h));
-            x += 2;
-        }
-        symbolWidth = ((pattern[0].length() - 1) * 2) + 1; // final bar doesn't need extra whitespace
-        symbolHeight = 8;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

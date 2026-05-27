@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.util;
 
 /**
@@ -33,10 +32,6 @@ public final class Integers {
      * @throws IllegalArgumentException if rotation is not a multiple of 90 degrees
      */
     public static int normalizeRotation(int rotation) {
-        int normalized = ((rotation % 360) + 360) % 360;
-        if (normalized % 90 != 0) {
-            throw new IllegalArgumentException("Rotation must be a multiple of 90 degrees");
-        }
-        return normalized;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

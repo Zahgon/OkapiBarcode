@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.util;
 
 import uk.org.okapibarcode.backend.OkapiInternalException;
@@ -37,12 +36,7 @@ public final class Arrays {
      * @return the position of the specified value in the specified array
      */
     public static int positionOf(char value, char[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (value == array[i]) {
-                return i;
-            }
-        }
-        throw new OkapiInternalException("Unable to find character '" + value + "' in character array.");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -53,12 +47,7 @@ public final class Arrays {
      * @return the position of the specified value in the specified array
      */
     public static int positionOf(int value, int[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (value == array[i]) {
-                return i;
-            }
-        }
-        throw new OkapiInternalException("Unable to find integer '" + value + "' in integer array.");
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -69,12 +58,7 @@ public final class Arrays {
      * @return true if the specified array contains the specified value
      */
     public static boolean contains(int[] array, int value) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == value) {
-                return true;
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -86,12 +70,7 @@ public final class Arrays {
      * @return whether or not the specified array contains the specified sub-array at the specified index
      */
     public static boolean containsAt(byte[] array, byte[] searchFor, int index) {
-        for (int i = 0; i < searchFor.length; i++) {
-            if (index + i >= array.length || array[index + i] != searchFor[i]) {
-                return false;
-            }
-        }
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -103,10 +82,6 @@ public final class Arrays {
      * @return the combined array
      */
     public static int[] insertArray(int[] original, int index, int[] inserted) {
-        int[] modified = new int[original.length + inserted.length];
-        System.arraycopy(original, 0, modified, 0, index);
-        System.arraycopy(inserted, 0, modified, index, inserted.length);
-        System.arraycopy(original, index, modified, index + inserted.length, modified.length - index - inserted.length);
-        return modified;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }

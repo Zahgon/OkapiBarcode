@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.org.okapibarcode.backend;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -31,46 +30,27 @@ import static uk.org.okapibarcode.util.Arrays.insertArray;
  */
 public class AztecCode extends Symbol {
 
-    /** The types of Aztec Code symbol sizes allowed.  */
+    /**
+     * The types of Aztec Code symbol sizes allowed.
+     */
     public enum Mode {
-        /** Allow only normal Aztec Code symbol sizes. */
+
+        /**
+         * Allow only normal Aztec Code symbol sizes.
+         */
         NORMAL,
-        /** Allow only compact Aztec Code symbol sizes. */
+        /**
+         * Allow only compact Aztec Code symbol sizes.
+         */
         COMPACT,
-        /** Allow both normal and compact Aztec Code symbol sizes. */
-        ANY;
+        /**
+         * Allow both normal and compact Aztec Code symbol sizes.
+         */
+        ANY
     }
 
     /* 27 x 27 data grid */
-    private static final int[] COMPACT_AZTEC_MAP = {
-        609, 608, 411, 413, 415, 417, 419, 421, 423, 425, 427, 429, 431, 433, 435, 437, 439, 441, 443, 445, 447, 449, 451, 453, 455, 457, 459,
-        607, 606, 410, 412, 414, 416, 418, 420, 422, 424, 426, 428, 430, 432, 434, 436, 438, 440, 442, 444, 446, 448, 450, 452, 454, 456, 458,
-        605, 604, 409, 408, 243, 245, 247, 249, 251, 253, 255, 257, 259, 261, 263, 265, 267, 269, 271, 273, 275, 277, 279, 281, 283, 460, 461,
-        603, 602, 407, 406, 242, 244, 246, 248, 250, 252, 254, 256, 258, 260, 262, 264, 266, 268, 270, 272, 274, 276, 278, 280, 282, 462, 463,
-        601, 600, 405, 404, 241, 240, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 284, 285, 464, 465,
-        599, 598, 403, 402, 239, 238, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 286, 287, 466, 467,
-        597, 596, 401, 400, 237, 236, 105, 104, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 140, 141, 288, 289, 468, 469,
-        595, 594, 399, 398, 235, 234, 103, 102, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 142, 143, 290, 291, 470, 471,
-        593, 592, 397, 396, 233, 232, 101, 100, 1, 1, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 0, 1, 28, 29, 144, 145, 292, 293, 472, 473,
-        591, 590, 395, 394, 231, 230, 99, 98, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 30, 31, 146, 147, 294, 295, 474, 475,
-        589, 588, 393, 392, 229, 228, 97, 96, 2027, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2007, 32, 33, 148, 149, 296, 297, 476, 477,
-        587, 586, 391, 390, 227, 226, 95, 94, 2026, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2008, 34, 35, 150, 151, 298, 299, 478, 479,
-        585, 584, 389, 388, 225, 224, 93, 92, 2025, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2009, 36, 37, 152, 153, 300, 301, 480, 481,
-        583, 582, 387, 386, 223, 222, 91, 90, 2024, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2010, 38, 39, 154, 155, 302, 303, 482, 483,
-        581, 580, 385, 384, 221, 220, 89, 88, 2023, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2011, 40, 41, 156, 157, 304, 305, 484, 485,
-        579, 578, 383, 382, 219, 218, 87, 86, 2022, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2012, 42, 43, 158, 159, 306, 307, 486, 487,
-        577, 576, 381, 380, 217, 216, 85, 84, 2021, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2013, 44, 45, 160, 161, 308, 309, 488, 489,
-        575, 574, 379, 378, 215, 214, 83, 82, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 46, 47, 162, 163, 310, 311, 490, 491,
-        573, 572, 377, 376, 213, 212, 81, 80, 0, 0, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 0, 0, 48, 49, 164, 165, 312, 313, 492, 493,
-        571, 570, 375, 374, 211, 210, 78, 76, 74, 72, 70, 68, 66, 64, 62, 60, 58, 56, 54, 50, 51, 166, 167, 314, 315, 494, 495,
-        569, 568, 373, 372, 209, 208, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 52, 53, 168, 169, 316, 317, 496, 497,
-        567, 566, 371, 370, 206, 204, 202, 200, 198, 196, 194, 192, 190, 188, 186, 184, 182, 180, 178, 176, 174, 170, 171, 318, 319, 498, 499,
-        565, 564, 369, 368, 207, 205, 203, 201, 199, 197, 195, 193, 191, 189, 187, 185, 183, 181, 179, 177, 175, 172, 173, 320, 321, 500, 501,
-        563, 562, 366, 364, 362, 360, 358, 356, 354, 352, 350, 348, 346, 344, 342, 340, 338, 336, 334, 332, 330, 328, 326, 322, 323, 502, 503,
-        561, 560, 367, 365, 363, 361, 359, 357, 355, 353, 351, 349, 347, 345, 343, 341, 339, 337, 335, 333, 331, 329, 327, 324, 325, 504, 505,
-        558, 556, 554, 552, 550, 548, 546, 544, 542, 540, 538, 536, 534, 532, 530, 528, 526, 524, 522, 520, 518, 516, 514, 512, 510, 506, 507,
-        559, 557, 555, 553, 551, 549, 547, 545, 543, 541, 539, 537, 535, 533, 531, 529, 527, 525, 523, 521, 519, 517, 515, 513, 511, 508, 509
-    };
+    private static final int[] COMPACT_AZTEC_MAP = { 609, 608, 411, 413, 415, 417, 419, 421, 423, 425, 427, 429, 431, 433, 435, 437, 439, 441, 443, 445, 447, 449, 451, 453, 455, 457, 459, 607, 606, 410, 412, 414, 416, 418, 420, 422, 424, 426, 428, 430, 432, 434, 436, 438, 440, 442, 444, 446, 448, 450, 452, 454, 456, 458, 605, 604, 409, 408, 243, 245, 247, 249, 251, 253, 255, 257, 259, 261, 263, 265, 267, 269, 271, 273, 275, 277, 279, 281, 283, 460, 461, 603, 602, 407, 406, 242, 244, 246, 248, 250, 252, 254, 256, 258, 260, 262, 264, 266, 268, 270, 272, 274, 276, 278, 280, 282, 462, 463, 601, 600, 405, 404, 241, 240, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 284, 285, 464, 465, 599, 598, 403, 402, 239, 238, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 286, 287, 466, 467, 597, 596, 401, 400, 237, 236, 105, 104, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 140, 141, 288, 289, 468, 469, 595, 594, 399, 398, 235, 234, 103, 102, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 142, 143, 290, 291, 470, 471, 593, 592, 397, 396, 233, 232, 101, 100, 1, 1, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 0, 1, 28, 29, 144, 145, 292, 293, 472, 473, 591, 590, 395, 394, 231, 230, 99, 98, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 30, 31, 146, 147, 294, 295, 474, 475, 589, 588, 393, 392, 229, 228, 97, 96, 2027, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2007, 32, 33, 148, 149, 296, 297, 476, 477, 587, 586, 391, 390, 227, 226, 95, 94, 2026, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2008, 34, 35, 150, 151, 298, 299, 478, 479, 585, 584, 389, 388, 225, 224, 93, 92, 2025, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2009, 36, 37, 152, 153, 300, 301, 480, 481, 583, 582, 387, 386, 223, 222, 91, 90, 2024, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2010, 38, 39, 154, 155, 302, 303, 482, 483, 581, 580, 385, 384, 221, 220, 89, 88, 2023, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2011, 40, 41, 156, 157, 304, 305, 484, 485, 579, 578, 383, 382, 219, 218, 87, 86, 2022, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2012, 42, 43, 158, 159, 306, 307, 486, 487, 577, 576, 381, 380, 217, 216, 85, 84, 2021, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2013, 44, 45, 160, 161, 308, 309, 488, 489, 575, 574, 379, 378, 215, 214, 83, 82, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 46, 47, 162, 163, 310, 311, 490, 491, 573, 572, 377, 376, 213, 212, 81, 80, 0, 0, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 0, 0, 48, 49, 164, 165, 312, 313, 492, 493, 571, 570, 375, 374, 211, 210, 78, 76, 74, 72, 70, 68, 66, 64, 62, 60, 58, 56, 54, 50, 51, 166, 167, 314, 315, 494, 495, 569, 568, 373, 372, 209, 208, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 52, 53, 168, 169, 316, 317, 496, 497, 567, 566, 371, 370, 206, 204, 202, 200, 198, 196, 194, 192, 190, 188, 186, 184, 182, 180, 178, 176, 174, 170, 171, 318, 319, 498, 499, 565, 564, 369, 368, 207, 205, 203, 201, 199, 197, 195, 193, 191, 189, 187, 185, 183, 181, 179, 177, 175, 172, 173, 320, 321, 500, 501, 563, 562, 366, 364, 362, 360, 358, 356, 354, 352, 350, 348, 346, 344, 342, 340, 338, 336, 334, 332, 330, 328, 326, 322, 323, 502, 503, 561, 560, 367, 365, 363, 361, 359, 357, 355, 353, 351, 349, 347, 345, 343, 341, 339, 337, 335, 333, 331, 329, 327, 324, 325, 504, 505, 558, 556, 554, 552, 550, 548, 546, 544, 542, 540, 538, 536, 534, 532, 530, 528, 526, 524, 522, 520, 518, 516, 514, 512, 510, 506, 507, 559, 557, 555, 553, 551, 549, 547, 545, 543, 541, 539, 537, 535, 533, 531, 529, 527, 525, 523, 521, 519, 517, 515, 513, 511, 508, 509 };
 
     private static final int[][] AZTEC_MAP = new int[151][151];
 
@@ -85,81 +65,45 @@ public class AztecCode extends Symbol {
      *
      * Values can be OR'ed, so e.g. 12 = 4 | 8, and 23 = 1 | 2 | 4 | 16
      */
-    private static final int[] AZTEC_CODE_SET = {
-        32, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 12, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 4, 4, 4, 4, 4, 23, 8, 8, 8, 8, 8, 8, 8,
-        8, 8, 8, 8, 24, 8, 24, 8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 8, 8,
-        8, 8, 8, 8, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 4, 8, 4, 4, 4, 2, 2, 2,
-        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-        2, 2, 2, 8, 4, 8, 4, 4
-    };
+    private static final int[] AZTEC_CODE_SET = { 32, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 12, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 4, 4, 4, 4, 4, 23, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 24, 8, 24, 8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 8, 8, 8, 8, 8, 8, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 4, 8, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 8, 4, 8, 4, 4 };
 
     /* From Table 2 */
-    private static final int[] AZTEC_SYMBOL_CHAR = {
-        0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 300, 14, 15, 16, 17, 18, 19,
-        20, 21, 22, 23, 24, 25, 26, 15, 16, 17, 18, 19, 1, 6, 7, 8, 9, 10, 11, 12,
-        13, 14, 15, 16, 301, 18, 302, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 21, 22,
-        23, 24, 25, 26, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 27, 21, 28, 22, 23, 24, 2, 3, 4,
-        5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-        25, 26, 27, 29, 25, 30, 26, 27
-    };
+    private static final int[] AZTEC_SYMBOL_CHAR = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 300, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 15, 16, 17, 18, 19, 1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 301, 18, 302, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 21, 22, 23, 24, 25, 26, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 27, 21, 28, 22, 23, 24, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 25, 30, 26, 27 };
 
     /* Problem characters are:
      * 300: Carriage Return (ASCII 13)
      * 301: Comma (ASCII 44)
      * 302: Full Stop (ASCII 46)
      */
-    private static final String[] PENTBIT = {
-        "00000", "00001", "00010", "00011", "00100", "00101", "00110", "00111", "01000", "01001",
-        "01010", "01011", "01100", "01101", "01110", "01111", "10000", "10001", "10010", "10011", "10100", "10101",
-        "10110", "10111", "11000", "11001", "11010", "11011", "11100", "11101", "11110", "11111"
-    };
+    private static final String[] PENTBIT = { "00000", "00001", "00010", "00011", "00100", "00101", "00110", "00111", "01000", "01001", "01010", "01011", "01100", "01101", "01110", "01111", "10000", "10001", "10010", "10011", "10100", "10101", "10110", "10111", "11000", "11001", "11010", "11011", "11100", "11101", "11110", "11111" };
 
-    private static final String[] QUADBIT = {
-        "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001",
-        "1010", "1011", "1100", "1101", "1110", "1111"
-    };
+    private static final String[] QUADBIT = { "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111" };
 
-    private static final String[] TRIBIT = {
-        "000", "001", "010", "011", "100", "101", "110", "111"
-    };
+    private static final String[] TRIBIT = { "000", "001", "010", "011", "100", "101", "110", "111" };
 
-    /** Symbol bit capacity (see Table 1) */
-    protected static final int[] AZTEC_BIT_CAPACITIES = {
-        126, 288, 480, 704, 960, 1248, 1568, 1920, 2300, 2720,
-        3160, 3640, 4160, 4700, 5280, 5880, 6520, 7200, 7900, 8640,
-        9400, 10200, 11040, 11904, 12792, 13728, 14688, 15672, 16704, 17760,
-        18840, 19968
-    };
+    /**
+     * Symbol bit capacity (see Table 1)
+     */
+    protected static final int[] AZTEC_BIT_CAPACITIES = { 126, 288, 480, 704, 960, 1248, 1568, 1920, 2300, 2720, 3160, 3640, 4160, 4700, 5280, 5880, 6520, 7200, 7900, 8640, 9400, 10200, 11040, 11904, 12792, 13728, 14688, 15672, 16704, 17760, 18840, 19968 };
 
-    /** Symbol bit capacity (see Table 1) */
-    protected static final int[] AZTEC_COMPACT_BIT_CAPACITIES = {
-        102, 240, 408, 608
-    };
+    /**
+     * Symbol bit capacity (see Table 1)
+     */
+    protected static final int[] AZTEC_COMPACT_BIT_CAPACITIES = { 102, 240, 408, 608 };
 
-    private static final int[] AZTEC_OFFSET = {
-        66, 64, 62, 60, 57, 55, 53, 51, 49, 47, 45, 42, 40, 38, 36, 34, 32, 30, 28, 25, 23, 21,
-        19, 17, 15, 13, 10, 8, 6, 4, 2, 0
-    };
+    private static final int[] AZTEC_OFFSET = { 66, 64, 62, 60, 57, 55, 53, 51, 49, 47, 45, 42, 40, 38, 36, 34, 32, 30, 28, 25, 23, 21, 19, 17, 15, 13, 10, 8, 6, 4, 2, 0 };
 
-    private static final int[] AZTEC_COMPACT_OFFSET = {
-        6, 4, 2, 0
-    };
+    private static final int[] AZTEC_COMPACT_OFFSET = { 6, 4, 2, 0 };
 
     /* Initialize AZTEC_MAP */
     static {
-
         int layer, start, length, n, i;
         int x, y;
-
         for (x = 0; x < 151; x++) {
             for (y = 0; y < 151; y++) {
                 AZTEC_MAP[x][y] = 0;
             }
         }
-
         for (layer = 1; layer < 33; layer++) {
             start = (112 * (layer - 1)) + (16 * (layer - 1) * (layer - 1)) + 2;
             length = 28 + ((layer - 1) * 4) + (layer * 4);
@@ -200,7 +144,6 @@ public class AztecCode extends Symbol {
                 i++;
             }
         }
-
         /* Central finder pattern */
         for (y = 69; y <= 81; y++) {
             for (x = 69; x <= 81; x++) {
@@ -232,7 +175,6 @@ public class AztecCode extends Symbol {
                 AZTEC_MAP[x][y] = 0;
             }
         }
-
         /* Guide bars */
         for (y = 11; y < 151; y += 16) {
             for (x = 1; x < 151; x += 2) {
@@ -240,21 +182,23 @@ public class AztecCode extends Symbol {
                 AZTEC_MAP[y][x] = 1;
             }
         }
-
         /* Descriptor */
-        for (i = 0; i < 10; i++) { /* Top */
+        for (i = 0; i < 10; i++) {
+            /* Top */
             AZTEC_MAP[avoidReferenceGrid(66 + i)][avoidReferenceGrid(64)] = 20000 + i;
         }
-        for (i = 0; i < 10; i++) { /* Right */
+        for (i = 0; i < 10; i++) {
+            /* Right */
             AZTEC_MAP[avoidReferenceGrid(77)][avoidReferenceGrid(66 + i)] = 20010 + i;
         }
-        for (i = 0; i < 10; i++) { /* Bottom */
+        for (i = 0; i < 10; i++) {
+            /* Bottom */
             AZTEC_MAP[avoidReferenceGrid(75 - i)][avoidReferenceGrid(77)] = 20020 + i;
         }
-        for (i = 0; i < 10; i++) { /* Left */
+        for (i = 0; i < 10; i++) {
+            /* Left */
             AZTEC_MAP[avoidReferenceGrid(64)][avoidReferenceGrid(75 - i)] = 20030 + i;
         }
-
         /* Orientation */
         AZTEC_MAP[avoidReferenceGrid(64)][avoidReferenceGrid(64)] = 1;
         AZTEC_MAP[avoidReferenceGrid(65)][avoidReferenceGrid(64)] = 1;
@@ -297,10 +241,15 @@ public class AztecCode extends Symbol {
     }
 
     private Mode mode;
+
     private int preferredSize = 0;
+
     private int preferredEccPercentage = 23;
+
     private String structuredAppendMessageId;
+
     private int structuredAppendPosition = 1;
+
     private int structuredAppendTotal = 1;
 
     /**
@@ -326,7 +275,7 @@ public class AztecCode extends Symbol {
      * @param mode the mode (normal sizes only, compact sizes only, or all sizes)
      */
     public void setMode(Mode mode) {
-        this.mode = mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -335,7 +284,7 @@ public class AztecCode extends Symbol {
      * @return the mode (normal sizes only, compact sizes only, or all sizes)
      */
     public Mode getMode() {
-        return mode;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -372,10 +321,7 @@ public class AztecCode extends Symbol {
      * @param size an integer in the range 1 - 36
      */
     public void setPreferredSize(int size) {
-        if (size < 1 || size > 36) {
-            throw new IllegalArgumentException("Invalid size: " + size);
-        }
-        preferredSize = size;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -384,7 +330,7 @@ public class AztecCode extends Symbol {
      * @return the preferred symbol size
      */
     public int getPreferredSize() {
-        return preferredSize;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -410,11 +356,19 @@ public class AztecCode extends Symbol {
         if (eccLevel < 1 || eccLevel > 4) {
             throw new IllegalArgumentException("Invalid ECC level: " + eccLevel);
         }
-        switch (eccLevel) {
-            case 1: preferredEccPercentage = 10; break;
-            case 2: preferredEccPercentage = 23; break;
-            case 3: preferredEccPercentage = 36; break;
-            case 4: preferredEccPercentage = 50; break;
+        switch(eccLevel) {
+            case 1:
+                preferredEccPercentage = 10;
+                break;
+            case 2:
+                preferredEccPercentage = 23;
+                break;
+            case 3:
+                preferredEccPercentage = 36;
+                break;
+            case 4:
+                preferredEccPercentage = 50;
+                break;
         }
     }
 
@@ -429,10 +383,7 @@ public class AztecCode extends Symbol {
      * @param percentage the percentage of symbol space dedicated to error correction (1 to 99)
      */
     public void setPreferredEccPercentage(int percentage) {
-        if (percentage < 1 || percentage > 99) {
-            throw new IllegalArgumentException("Invalid ECC percentage: " + percentage);
-        }
-        preferredEccPercentage = percentage;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -441,7 +392,7 @@ public class AztecCode extends Symbol {
      * @return the preferred minimum amount of symbol space dedicated to error correction
      */
     public int getPreferredEccPercentage() {
-        return preferredEccPercentage;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -452,10 +403,7 @@ public class AztecCode extends Symbol {
      * @param position the position of this Aztec Code symbol in the structured append series
      */
     public void setStructuredAppendPosition(int position) {
-        if (position < 1 || position > 26) {
-            throw new IllegalArgumentException("Invalid Aztec Code structured append position: " + position);
-        }
-        this.structuredAppendPosition = position;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -465,7 +413,7 @@ public class AztecCode extends Symbol {
      * @return the position of this Aztec Code symbol in a series of symbols using structured append
      */
     public int getStructuredAppendPosition() {
-        return structuredAppendPosition;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -477,10 +425,7 @@ public class AztecCode extends Symbol {
      * @param total the total number of Aztec Code symbols in the structured append series
      */
     public void setStructuredAppendTotal(int total) {
-        if (total < 1 || total > 26) {
-            throw new IllegalArgumentException("Invalid Aztec Code structured append total: " + total);
-        }
-        this.structuredAppendTotal = total;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -491,7 +436,7 @@ public class AztecCode extends Symbol {
      * @return size of the series that this symbol is part of
      */
     public int getStructuredAppendTotal() {
-        return structuredAppendTotal;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -502,10 +447,7 @@ public class AztecCode extends Symbol {
      * @param messageId the unique message ID for the series that this symbol is part of
      */
     public void setStructuredAppendMessageId(String messageId) {
-        if (messageId != null && !messageId.matches("^[\\x21-\\x7F]+$")) {
-            throw new IllegalArgumentException("Invalid Aztec Code structured append message ID: " + messageId);
-        }
-        this.structuredAppendMessageId = messageId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -516,253 +458,54 @@ public class AztecCode extends Symbol {
      * @return the unique message ID for the series that this symbol is part of
      */
     public String getStructuredAppendMessageId() {
-        return structuredAppendMessageId;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supportsGs1() {
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public boolean supportsEci() {
-        return true;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     protected void encode() {
-
-        int layers;
-        boolean compact;
-        StringBuilder adjustedString;
-
-        eciProcess(); // Get ECI mode
-
-        /* Optional structured append (Section 8 of spec) */
-        /* ML + UL start flag handled later, not part of data */
-        if (structuredAppendTotal != 1) {
-            StringBuilder prefix = new StringBuilder();
-            if (structuredAppendMessageId != null) {
-                prefix.append(' ').append(structuredAppendMessageId).append(' ');
-            }
-            prefix.append((char) (structuredAppendPosition + 64)); // 1-26 as A-Z
-            prefix.append((char) (structuredAppendTotal + 64)); // 1-26 as A-Z
-            int[] prefixArray = toBytes(prefix.toString(), US_ASCII);
-            inputData = insertArray(inputData, 0, prefixArray);
-        }
-
-        CharSequence binaryString = generateAztecBinary();
-        int dataLength = binaryString.length();
-
-        if (preferredSize == 0) {
-
-            /* The size of the symbol can be determined by Okapi */
-
-            int dataMaxSize = 0;
-            int compLoop = (readerInit ? 1 : 4);
-
-            do {
-                /* Decide what size symbol to use - the smallest that fits the data */
-
-                layers = 0;
-                compact = false;
-
-                if (mode == Mode.NORMAL || mode == Mode.ANY) {
-                    for (int i = 1; i <= 32; i++) {
-                        int dataBitCapacity = dataBitCapacity(preferredEccPercentage, i, false);
-                        if (dataLength <= dataBitCapacity) {
-                            layers = i;
-                            compact = false;
-                            dataMaxSize = dataBitCapacity;
-                            break;
-                        }
-                    }
-                }
-
-                if (mode == Mode.COMPACT || mode == Mode.ANY) {
-                    for (int i = 1; i <= compLoop; i++) {
-                        int dataBitCapacity = dataBitCapacity(preferredEccPercentage, i, true);
-                        if (dataLength <= dataBitCapacity) {
-                            layers = i;
-                            compact = true;
-                            dataMaxSize = dataBitCapacity;
-                            break;
-                        }
-                    }
-                }
-
-                if (layers == 0) {
-                    /* Couldn't find a symbol which fits the data */
-                    throw new OkapiInputException("Input too long (too many bits for selected ECC)");
-                }
-
-                adjustedString = adjustBinaryString(binaryString, compact, layers);
-                dataLength = adjustedString.length();
-
-            } while (dataLength > dataMaxSize);
-            /* This loop will only repeat on the rare occasions when the rule about not having all 1s or all 0s
-             means that the binary string has had to be lengthened beyond the maximum number of bits that can
-             be encoded in a symbol of the selected size */
-
-        } else {
-
-            /* The size of the symbol has been specified by the user */
-
-            if (preferredSize >= 1 && preferredSize <= 4) {
-                compact = true;
-                layers = preferredSize;
-            } else {
-                compact = false;
-                layers = preferredSize - 4;
-            }
-
-            if ((compact && mode == Mode.NORMAL) || (!compact && mode == Mode.COMPACT)) {
-                throw new OkapiInputException("Aztec mode " + mode + " and preferred size " + preferredSize + " are incompatible");
-            }
-
-            adjustedString = adjustBinaryString(binaryString, compact, layers);
-
-            /* Check if the data actually fits into the selected symbol size */
-            int dataBitCapacity = dataBitCapacity(0, layers, compact);
-            if (adjustedString.length() > dataBitCapacity) {
-                throw new OkapiInputException("Data too long for specified Aztec Code symbol size");
-            }
-        }
-
-        if (readerInit && compact && layers > 1) {
-            throw new OkapiInputException("Symbol is too large for reader initialization");
-        }
-
-        if (readerInit && layers > 22) {
-            throw new OkapiInputException("Symbol is too large for reader initialization");
-        }
-
-        int bitCapacity = compact ? AZTEC_COMPACT_BIT_CAPACITIES[layers - 1] : AZTEC_BIT_CAPACITIES[layers - 1];
-        int codewordSize = getCodewordSize(layers);
-        int totalBlocks = bitCapacity / codewordSize; // no rounding needed, always an exact multiple
-        int dataBlocks = (int) Math.ceil(adjustedString.length() / (double) codewordSize); // round up
-        int eccBlocks = totalBlocks - dataBlocks;
-
-        infoLine("Compact Mode: ", compact);
-        infoLine("Layers: ", layers);
-        infoLine("Codeword Length: ", codewordSize + " bits");
-        infoLine("Data Codewords: ", dataBlocks);
-        infoLine("ECC Codewords: ", eccBlocks);
-
-        /* Add ECC data to the adjusted string */
-        addErrorCorrection(adjustedString, codewordSize, dataBlocks, eccBlocks);
-
-        /* Invert the data so that actual data is on the outside and reed-solomon on the inside */
-        for (int i = 0; i < adjustedString.length() / 2; i++) {
-            int mirror = adjustedString.length() - i - 1;
-            char c = adjustedString.charAt(i);
-            adjustedString.setCharAt(i, adjustedString.charAt(mirror));
-            adjustedString.setCharAt(mirror, c);
-        }
-
-        /* Create the descriptor / mode message */
-        String descriptor = createDescriptor(compact, layers, dataBlocks);
-
-        /* Plot all of the data into the symbol in pre-defined spiral pattern */
-        if (compact) {
-
-            readable = "";
-            rowCount = 27 - (2 * AZTEC_COMPACT_OFFSET[layers - 1]);
-            rowHeight = new int[rowCount];
-            rowHeight[0] = defaultHeight;
-            pattern = new String[rowCount];
-            for (int y = AZTEC_COMPACT_OFFSET[layers - 1]; y < (27 - AZTEC_COMPACT_OFFSET[layers - 1]); y++) {
-                StringBuilder bin = new StringBuilder(27);
-                for (int x = AZTEC_COMPACT_OFFSET[layers - 1]; x < (27 - AZTEC_COMPACT_OFFSET[layers - 1]); x++) {
-                    int j = COMPACT_AZTEC_MAP[(y * 27) + x];
-                    if (j == 0) {
-                        bin.append('0');
-                    }
-                    if (j == 1) {
-                        bin.append('1');
-                    }
-                    if (j >= 2) {
-                        if (j - 2 < adjustedString.length()) {
-                            bin.append(adjustedString.charAt(j - 2));
-                        } else {
-                            if (j >= 2000) {
-                                bin.append(descriptor.charAt(j - 2000));
-                            } else {
-                                bin.append('0');
-                            }
-                        }
-                    }
-                }
-                rowHeight[y - AZTEC_COMPACT_OFFSET[layers - 1]] = moduleWidth;
-                pattern[y - AZTEC_COMPACT_OFFSET[layers - 1]] = bin2pat(bin);
-            }
-
-        } else {
-
-            readable = "";
-            rowCount = 151 - (2 * AZTEC_OFFSET[layers - 1]);
-            rowHeight = new int[rowCount];
-            rowHeight[0] = defaultHeight;
-            pattern = new String[rowCount];
-            for (int y = AZTEC_OFFSET[layers - 1]; y < (151 - AZTEC_OFFSET[layers - 1]); y++) {
-                StringBuilder bin = new StringBuilder(151);
-                for (int x = AZTEC_OFFSET[layers - 1]; x < (151 - AZTEC_OFFSET[layers - 1]); x++) {
-                    int j = AZTEC_MAP[x][y];
-                    if (j == 1) {
-                        bin.append('1');
-                    }
-                    if (j == 0) {
-                        bin.append('0');
-                    }
-                    if (j >= 2) {
-                        if (j - 2 < adjustedString.length()) {
-                            bin.append(adjustedString.charAt(j - 2));
-                        } else {
-                            if (j >= 20000) {
-                                bin.append(descriptor.charAt(j - 20000));
-                            } else {
-                                bin.append('0');
-                            }
-                        }
-                    }
-                }
-                rowHeight[y - AZTEC_OFFSET[layers - 1]] = moduleWidth;
-                pattern[y - AZTEC_OFFSET[layers - 1]] = bin2pat(bin);
-            }
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     protected int dataBitCapacity(int preferredEccPercentage, int layers, boolean compact) {
-        int totalBitCapacity = compact ? AZTEC_COMPACT_BIT_CAPACITIES[layers - 1] : AZTEC_BIT_CAPACITIES[layers - 1];
-        int codewordSize = getCodewordSize(layers);
-        int requiredEccBits = 3 * codewordSize;
-        int preferredEccBits = (int) (totalBitCapacity * preferredEccPercentage / 100d); // round down to nearest whole bit
-        preferredEccBits -= preferredEccBits % codewordSize; // round down to nearest whole codeword
-        return totalBitCapacity - requiredEccBits - preferredEccBits;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private CharSequence generateAztecBinary() {
-
         /* Encode input data into a binary string */
         int i, j, k, bytes;
         int curtable, newtable, lasttable, chartype, maplength, blocks;
-        int[] charmap = new int[(2 * inputData.length) + 4]; // include space for possible GS1 and ECI indicators
-        int[] typemap = new int[(2 * inputData.length) + 4]; // include space for possible GS1 and ECI indicators
+        // include space for possible GS1 and ECI indicators
+        int[] charmap = new int[(2 * inputData.length) + 4];
+        // include space for possible GS1 and ECI indicators
+        int[] typemap = new int[(2 * inputData.length) + 4];
         int[] blockType = new int[inputData.length + 1];
         int[] blockLength = new int[inputData.length + 1];
-
         /* Lookup input string in encoding table */
         maplength = 0;
-
         /* Add FNC1 to beginning of GS1 messages */
         if (inputDataType == DataType.GS1) {
-            charmap[maplength] = 0; // FLG
-            typemap[maplength++] = 8; // PUNC
-            charmap[maplength] = 400; // (0)
-            typemap[maplength++] = 8; // PUNC
+            // FLG
+            charmap[maplength] = 0;
+            // PUNC
+            typemap[maplength++] = 8;
+            // (0)
+            charmap[maplength] = 400;
+            // PUNC
+            typemap[maplength++] = 8;
         }
-
-        /** Add ECI mode to beginning of symbols which need it */
+        /**
+         * Add ECI mode to beginning of symbols which need it
+         */
         if (eciMode != 3) {
             int flagNumber;
             if (eciMode < 10) {
@@ -778,37 +521,46 @@ public class AztecCode extends Symbol {
             } else {
                 flagNumber = 6;
             }
-            charmap[maplength] = 0; // FLG
-            typemap[maplength++] = 8; // PUNC
+            // FLG
+            charmap[maplength] = 0;
+            // PUNC
+            typemap[maplength++] = 8;
             charmap[maplength] = 400 + flagNumber;
-            typemap[maplength++] = 8; // PUNC
+            // PUNC
+            typemap[maplength++] = 8;
         }
-
-        /** Add message data */
+        /**
+         * Add message data
+         */
         for (i = 0; i < inputData.length; i++) {
             if (inputData[i] == FNC1) {
                 /* FNC1 represented by FLG(0) */
-                charmap[maplength] = 0; // FLG
-                typemap[maplength++] = 8; // PUNC
-                charmap[maplength] = 400; // (0)
-                typemap[maplength++] = 8; // PUNC
+                // FLG
+                charmap[maplength] = 0;
+                // PUNC
+                typemap[maplength++] = 8;
+                // (0)
+                charmap[maplength] = 400;
+                // PUNC
+                typemap[maplength++] = 8;
             } else {
                 if ((inputData[i] > 0x7F) || (inputData[i] == 0x00)) {
                     charmap[maplength] = inputData[i];
-                    typemap[maplength++] = 32; //BINARY
+                    //BINARY
+                    typemap[maplength++] = 32;
                 } else {
                     charmap[maplength] = AZTEC_SYMBOL_CHAR[inputData[i]];
                     typemap[maplength++] = AZTEC_CODE_SET[inputData[i]];
                 }
             }
         }
-
         /* Look for double character encoding possibilities */
         for (i = 0; i + 1 < maplength; i++) {
             if (((charmap[i] == 300) && (charmap[i + 1] == 11)) && ((typemap[i] == 12) && (typemap[i + 1] == 4))) {
                 /* CR LF combination */
                 charmap[i] = 2;
-                typemap[i] = 8; // PUNC
+                // PUNC
+                typemap[i] = 8;
                 if ((i + 1) != maplength) {
                     for (j = i + 1; j < maplength; j++) {
                         charmap[j] = charmap[j + 1];
@@ -817,11 +569,11 @@ public class AztecCode extends Symbol {
                 }
                 maplength--;
             }
-
             if (((charmap[i] == 302) && (charmap[i + 1] == 1)) && ((typemap[i] == 24) && (typemap[i + 1] == 23))) {
                 /* . SP combination */
                 charmap[i] = 3;
-                typemap[i] = 8; // PUNC;
+                // PUNC;
+                typemap[i] = 8;
                 if ((i + 1) != maplength) {
                     for (j = i + 1; j < maplength; j++) {
                         charmap[j] = charmap[j + 1];
@@ -830,11 +582,11 @@ public class AztecCode extends Symbol {
                 }
                 maplength--;
             }
-
             if (((charmap[i] == 301) && (charmap[i + 1] == 1)) && ((typemap[i] == 24) && (typemap[i + 1] == 23))) {
                 /* , SP combination */
                 charmap[i] = 4;
-                typemap[i] = 8; //PUNC;
+                //PUNC;
+                typemap[i] = 8;
                 if ((i + 1) != maplength) {
                     for (j = i + 1; j < maplength; j++) {
                         charmap[j] = charmap[j + 1];
@@ -843,11 +595,11 @@ public class AztecCode extends Symbol {
                 }
                 maplength--;
             }
-
             if (((charmap[i] == 21) && (charmap[i + 1] == 1)) && ((typemap[i] == 8) && (typemap[i + 1] == 23))) {
                 /* : SP combination */
                 charmap[i] = 5;
-                typemap[i] = 8; //PUNC;
+                //PUNC;
+                typemap[i] = 8;
                 if ((i + 1) != maplength) {
                     for (j = i + 1; j < maplength; j++) {
                         charmap[j] = charmap[j + 1];
@@ -857,7 +609,6 @@ public class AztecCode extends Symbol {
                 maplength--;
             }
         }
-
         /* look for blocks of characters which use the same table */
         blocks = 0;
         for (i = 0; i < maplength; i++) {
@@ -869,7 +620,6 @@ public class AztecCode extends Symbol {
                 blockLength[blocks - 1] = 1;
             }
         }
-
         if ((blockType[0] & 1) != 0) {
             blockType[0] = 1;
         }
@@ -882,16 +632,13 @@ public class AztecCode extends Symbol {
         if ((blockType[0] & 8) != 0) {
             blockType[0] = 8;
         }
-
         if (blocks > 1) {
-
             /* look for adjacent blocks which can use the same table (left to right search) */
             for (i = 1; i < blocks; i++) {
                 if ((blockType[i] & blockType[i - 1]) != 0) {
                     blockType[i] = (blockType[i] & blockType[i - 1]);
                 }
             }
-
             if ((blockType[blocks - 1] & 1) != 0) {
                 blockType[blocks - 1] = 1;
             }
@@ -904,14 +651,12 @@ public class AztecCode extends Symbol {
             if ((blockType[blocks - 1] & 8) != 0) {
                 blockType[blocks - 1] = 8;
             }
-
             /* look for adjacent blocks which can use the same table (right to left search) */
             for (i = blocks - 2; i > 0; i--) {
                 if ((blockType[i] & blockType[i + 1]) != 0) {
                     blockType[i] = (blockType[i] & blockType[i + 1]);
                 }
             }
-
             /* determine the encoding table for characters which do not fit with adjacent blocks */
             for (i = 1; i < blocks; i++) {
                 if ((blockType[i] & 8) != 0) {
@@ -927,23 +672,20 @@ public class AztecCode extends Symbol {
                     blockType[i] = 1;
                 }
             }
-
             /* if less than 4 characters are preceded and followed by binary blocks
                then it is more efficient to also encode these in binary
             */
-
-//            for (i = 1; i < blocks - 1; i++) {
-//                if ((blockType[i - 1] == 32) && (blockLength[i] < 4)) {
-//                    int nonBinaryLength = blockLength[i];
-//                    for (int l = i; ((l < blocks) && (blockType[l] != 32)); l++) {
-//                        nonBinaryLength += blockLength[l];
-//                    }
-//                    if (nonBinaryLength < 4) {
-//                        blockType[i] = 32;
-//                    }
-//                }
-//            }
-
+            //            for (i = 1; i < blocks - 1; i++) {
+            //                if ((blockType[i - 1] == 32) && (blockLength[i] < 4)) {
+            //                    int nonBinaryLength = blockLength[i];
+            //                    for (int l = i; ((l < blocks) && (blockType[l] != 32)); l++) {
+            //                        nonBinaryLength += blockLength[l];
+            //                    }
+            //                    if (nonBinaryLength < 4) {
+            //                        blockType[i] = 32;
+            //                    }
+            //                }
+            //            }
             /* Combine blocks of the same type */
             i = 0;
             do {
@@ -959,29 +701,26 @@ public class AztecCode extends Symbol {
                 }
             } while (i < blocks - 1);
         }
-
         /* Put the adjusted block data back into typemap */
         j = 0;
         for (i = 0; i < blocks; i++) {
-            if ((blockLength[i] < 3) && (blockType[i] != 32)) { /* Shift character(s) needed */
-
+            if ((blockLength[i] < 3) && (blockType[i] != 32)) {
+                /* Shift character(s) needed */
                 for (k = 0; k < blockLength[i]; k++) {
                     typemap[j + k] = blockType[i] + 64;
                 }
-            } else { /* Latch character (or byte mode) needed */
-
+            } else {
+                /* Latch character (or byte mode) needed */
                 for (k = 0; k < blockLength[i]; k++) {
                     typemap[j + k] = blockType[i];
                 }
             }
             j += blockLength[i];
         }
-
         /* Don't shift an initial capital letter */
         if (maplength > 0 && typemap[0] == 65) {
             typemap[0] = 1;
         }
-
         /* Problem characters (those that appear in different tables with different values) can now be resolved into their tables */
         for (i = 0; i < maplength; i++) {
             if ((charmap[i] >= 300) && (charmap[i] < 400)) {
@@ -989,49 +728,54 @@ public class AztecCode extends Symbol {
                 if (curtable > 64) {
                     curtable -= 64;
                 }
-                switch (charmap[i]) {
+                switch(charmap[i]) {
                     case 300:
                         /* Carriage Return */
-                        switch (curtable) {
+                        switch(curtable) {
                             case 8:
                                 charmap[i] = 1;
-                                break; // PUNC
+                                // PUNC
+                                break;
                             case 4:
                                 charmap[i] = 14;
-                                break; // PUNC
+                                // PUNC
+                                break;
                         }
                         break;
                     case 301:
                         /* Comma */
-                        switch (curtable) {
+                        switch(curtable) {
                             case 8:
                                 charmap[i] = 17;
-                                break; // PUNC
+                                // PUNC
+                                break;
                             case 16:
                                 charmap[i] = 12;
-                                break; // DIGIT
+                                // DIGIT
+                                break;
                         }
                         break;
                     case 302:
                         /* Full Stop */
-                        switch (curtable) {
+                        switch(curtable) {
                             case 8:
                                 charmap[i] = 19;
-                                break; // PUNC
+                                // PUNC
+                                break;
                             case 16:
                                 charmap[i] = 13;
-                                break; // DIGIT
+                                // DIGIT
+                                break;
                         }
                         break;
                 }
             }
         }
-
         StringBuilder binaryString = new StringBuilder();
         info("Encoding: ");
-        curtable = 1; /* start with 1 table */
+        curtable = 1;
+        /* start with 1 table */
         lasttable = 1;
-
         /* Optional structured append start flag (Section 8 of spec) */
         if (structuredAppendTotal != 1) {
             binaryString.append(PENTBIT[29]);
@@ -1039,7 +783,6 @@ public class AztecCode extends Symbol {
             binaryString.append(PENTBIT[29]);
             info("UL ");
         }
-
         for (i = 0; i < maplength; i++) {
             newtable = curtable;
             if ((typemap[i] != curtable) && (charmap[i] < 400)) {
@@ -1051,10 +794,10 @@ public class AztecCode extends Symbol {
                 }
                 if (typemap[i] > 64) {
                     /* Shift character */
-                    switch (typemap[i]) {
+                    switch(typemap[i]) {
                         case (64 + 1):
                             /* To UPPER */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 2:
                                     /* US */
                                     binaryString.append(PENTBIT[28]);
@@ -1081,7 +824,7 @@ public class AztecCode extends Symbol {
                             break;
                         case (64 + 2):
                             /* To LOWER */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* LL */
                                     binaryString.append(PENTBIT[28]);
@@ -1114,7 +857,7 @@ public class AztecCode extends Symbol {
                             break;
                         case (64 + 4):
                             /* To MIXED */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* ML */
                                     binaryString.append(PENTBIT[29]);
@@ -1147,7 +890,7 @@ public class AztecCode extends Symbol {
                             break;
                         case (64 + 8):
                             /* To PUNC */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* PS */
                                     binaryString.append(PENTBIT[0]);
@@ -1172,7 +915,7 @@ public class AztecCode extends Symbol {
                             break;
                         case (64 + 16):
                             /* To DIGIT */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* DL */
                                     binaryString.append(PENTBIT[30]);
@@ -1206,10 +949,10 @@ public class AztecCode extends Symbol {
                     }
                 } else {
                     /* Latch character */
-                    switch (typemap[i]) {
+                    switch(typemap[i]) {
                         case 1:
                             /* To UPPER */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 2:
                                     /* ML UL */
                                     binaryString.append(PENTBIT[29]);
@@ -1240,7 +983,7 @@ public class AztecCode extends Symbol {
                             break;
                         case 2:
                             /* To LOWER */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* LL */
                                     binaryString.append(PENTBIT[28]);
@@ -1273,7 +1016,7 @@ public class AztecCode extends Symbol {
                             break;
                         case 4:
                             /* To MIXED */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* ML */
                                     binaryString.append(PENTBIT[29]);
@@ -1306,7 +1049,7 @@ public class AztecCode extends Symbol {
                             break;
                         case 8:
                             /* To PUNC */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* ML PL */
                                     binaryString.append(PENTBIT[29]);
@@ -1343,7 +1086,7 @@ public class AztecCode extends Symbol {
                             break;
                         case 16:
                             /* To DIGIT */
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* DL */
                                     binaryString.append(PENTBIT[30]);
@@ -1377,7 +1120,7 @@ public class AztecCode extends Symbol {
                         case 32:
                             /* To BINARY */
                             lasttable = curtable;
-                            switch (curtable) {
+                            switch(curtable) {
                                 case 1:
                                     /* BS */
                                     binaryString.append(PENTBIT[31]);
@@ -1415,16 +1158,13 @@ public class AztecCode extends Symbol {
                                     newtable = 32;
                                     break;
                             }
-
                             bytes = 0;
                             while (i + bytes < maplength && typemap[i + bytes] == 32) {
                                 bytes++;
                             }
-
                             if (bytes > 2079) {
                                 throw OkapiInputException.inputTooLong();
                             }
-
                             if (bytes > 31) {
                                 /* Put 00000 followed by 11-bit number of bytes less 31 */
                                 binaryString.append("00000");
@@ -1445,7 +1185,6 @@ public class AztecCode extends Symbol {
                                     }
                                 }
                             }
-
                             break;
                     }
                 }
@@ -1456,7 +1195,7 @@ public class AztecCode extends Symbol {
             if (chartype > 64) {
                 chartype -= 64;
             }
-            switch (chartype) {
+            switch(chartype) {
                 case 1:
                 case 2:
                 case 4:
@@ -1489,20 +1228,18 @@ public class AztecCode extends Symbol {
                     break;
             }
         }
-
         infoLine();
-
         return binaryString;
     }
 
-    /** Adjusts bit stream so that no codewords are all 0s or all 1s, per Section 7.3.1.2 */
+    /**
+     * Adjusts bit stream so that no codewords are all 0s or all 1s, per Section 7.3.1.2
+     */
     private StringBuilder adjustBinaryString(CharSequence binaryString, boolean compact, int layers) {
-
         int codewordSize = getCodewordSize(layers);
         int startCapacity = binaryString.length() + (2 * codewordSize);
         StringBuilder adjustedString = new StringBuilder(startCapacity);
         int ones = 0;
-
         /* Insert dummy digits needed to prevent codewords of all 0s or all 1s */
         for (int i = 0; i < binaryString.length(); i++) {
             if ((adjustedString.length() + 1) % codewordSize == 0) {
@@ -1526,7 +1263,6 @@ public class AztecCode extends Symbol {
                 }
             }
         }
-
         /* Add padding */
         int adjustedLength = adjustedString.length();
         int remainder = adjustedLength % codewordSize;
@@ -1538,7 +1274,6 @@ public class AztecCode extends Symbol {
             adjustedString.append('1');
         }
         adjustedLength = adjustedString.length();
-
         /* Make sure padding didn't create an invalid (all 1s) codeword */
         ones = 0;
         for (int i = adjustedLength - codewordSize; i < adjustedLength && i >= 0; i++) {
@@ -1549,7 +1284,6 @@ public class AztecCode extends Symbol {
         if (ones == codewordSize) {
             adjustedString.setCharAt(adjustedLength - 1, '0');
         }
-
         /* Log the codewords */
         info("Codewords: ");
         for (int i = 0; i < (adjustedLength / codewordSize); i++) {
@@ -1563,7 +1297,6 @@ public class AztecCode extends Symbol {
             infoSpace(l);
         }
         infoLine();
-
         /* Return the adjusted bit string */
         return adjustedString;
     }
@@ -1578,12 +1311,12 @@ public class AztecCode extends Symbol {
         return binary;
     }
 
-    /** Creates the descriptor / mode message, per Section 7.2 */
+    /**
+     * Creates the descriptor / mode message, per Section 7.2
+     */
     private String createDescriptor(boolean compact, int layers, int dataBlocks) {
-
         StringBuilder descriptor = new StringBuilder();
         int descDataSize;
-
         if (compact) {
             /* The first 2 bits represent the number of layers minus 1 */
             if (((layers - 1) & 0x02) != 0) {
@@ -1623,7 +1356,6 @@ public class AztecCode extends Symbol {
                     descriptor.append('0');
                 }
             }
-
             /* The next 11 bits represent the number of data blocks minus 1 */
             if (readerInit) {
                 descriptor.append('1');
@@ -1643,9 +1375,7 @@ public class AztecCode extends Symbol {
             }
             descDataSize = 4;
         }
-
         infoLine("Mode Message: ", descriptor);
-
         /* Split into 4-bit codewords */
         int[] desc_data = new int[descDataSize];
         for (int i = 0; i < descDataSize; i++) {
@@ -1655,7 +1385,6 @@ public class AztecCode extends Symbol {
                 }
             }
         }
-
         /* Add Reed-Solomon error correction with Galois Field GF(16) and prime modulus x^4 + x + 1 (Section 7.2.3) */
         if (compact) {
             ReedSolomon rs = ReedSolomon.get(0x13, 5, 1, true);
@@ -1690,17 +1419,16 @@ public class AztecCode extends Symbol {
                 }
             }
         }
-
         return descriptor.toString();
     }
 
-    /** Adds error correction data to the specified binary string, which already contains the primary data */
+    /**
+     * Adds error correction data to the specified binary string, which already contains the primary data
+     */
     private void addErrorCorrection(StringBuilder adjustedString, int codewordSize, int dataBlocks, int eccBlocks) {
-
         int x, poly, startWeight;
-
         /* Split into codewords and calculate Reed-Solomon error correction codes */
-        switch (codewordSize) {
+        switch(codewordSize) {
             case 6:
                 x = 32;
                 poly = 0x43;
@@ -1724,10 +1452,8 @@ public class AztecCode extends Symbol {
             default:
                 throw new OkapiInternalException("Unrecognized codeword size: " + codewordSize);
         }
-
         int[] data = new int[dataBlocks + 3];
         int[] ecc = new int[eccBlocks + 3];
-
         for (int i = 0; i < dataBlocks; i++) {
             for (int weight = 0; weight < codewordSize; weight++) {
                 if (adjustedString.charAt((i * codewordSize) + weight) == '1') {
@@ -1735,11 +1461,9 @@ public class AztecCode extends Symbol {
                 }
             }
         }
-
         ReedSolomon rs = ReedSolomon.get(poly, eccBlocks, 1, false);
         int[] result = rs.encode(dataBlocks, data);
         System.arraycopy(result, 0, ecc, 0, eccBlocks);
-
         for (int i = (eccBlocks - 1); i >= 0; i--) {
             for (int weight = startWeight; weight > 0; weight = weight >> 1) {
                 if ((ecc[i] & weight) != 0) {
@@ -1751,16 +1475,10 @@ public class AztecCode extends Symbol {
         }
     }
 
-    /** Determines codeword bit length, per Table 3 */
+    /**
+     * Determines codeword bit length, per Table 3
+     */
     protected static int getCodewordSize(int layers) {
-        if (layers >= 23) {
-            return 12;
-        } else if (layers >= 9) {
-            return 10;
-        } else if (layers >= 3) {
-            return 8;
-        } else {
-            return 6;
-        }
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 }
